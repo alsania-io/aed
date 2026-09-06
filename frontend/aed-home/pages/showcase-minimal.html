@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AED Showcase - Live Examples</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 {
+      font-size: 3em;
+      color: #00ff88;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px rgba(0,255,136,0.5);
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 1.3em;
+      color: #888;
+      margin-bottom: 50px;
+    }
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+    .showcase-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 30px;
+      border: 2px solid rgba(255,255,255,0.1);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .showcase-card:hover {
+      transform: translateY(-5px);
+      border-color: #00ff88;
+      box-shadow: 0 20px 40px rgba(0,255,136,0.2);
+    }
+    .showcase-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00ff88, #667eea, #764ba2);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .domain-name {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #e0e0e0;
+    }
+    .token-id {
+      background: #667eea;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .badge-icon {
+      font-size: 3em;
+      text-align: center;
+      margin: 15px 0;
+    }
+    .model-type {
+      text-align: center;
+      color: #667eea;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .stat-box {
+      background: rgba(0,255,136,0.1);
+      border: 1px solid rgba(0,255,136,0.3);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #00ff88;
+    }
+    .stat-label {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 5px;
+    }
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .capability-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+    .cap-icon {
+      font-size: 1.2em;
+    }
+    .cap-icon.unlocked { filter: grayscale(0); }
+    .cap-icon.locked { filter: grayscale(1); opacity: 0.3; }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10,14,39,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(0,255,136,0.3);
+      border-top-color: #00ff88;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .badge-type {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+    .badge-type.domain { background: rgba(102,126,234,0.3); color: #667eea; }
+    .badge-type.badge { background: rgba(0,255,136,0.3); color: #00ff88; }
+    .section-title {
+      font-size: 2em;
+      color: #00ff88;
+      margin: 50px 0 30px 0;
+      text-align: center;
+    }
+    .comparison-table {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px 0;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    th {
+      color: #00ff88;
+      font-weight: 700;
+    }
+    .check { color: #00ff88; }
+    .cross { color: #ff4444; }
+    .feature-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 0.75em;
+      background: rgba(0,255,136,0.15);
+      color: #00ff88;
+      margin: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading-overlay">
+    <div>
+      <div class="loading-spinner"></div>
+      <p style="text-align: center; margin-top: 20px; color: #00ff88;">Loading live examples from blockchain...</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>🌟 AED Showcase</h1>
+    <p class="subtitle">Live examples of domains and AI badges from Polygon Amoy</p>
+
+    <div id="showcaseGrid" class="showcase-grid"></div>
+
+    <h2 class="section-title">Badge Capabilities Comparison</h2>
+    <div class="comparison-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Type</th>
+            <th>Model</th>
+            <th>Capabilities</th>
+          </tr>
+        </thead>
+        <tbody id="comparisonTable">
+          <tr><td colspan="4" style="text-align: center; color: #888;">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const CONTRACT_ADDRESS = "0x9276f78c574b737d914704D9096777C1929ec1cB";
+    const RPC_URL = "https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO";
+    
+    const ABI = [
+      "function getDomainByTokenId(uint256 tokenId) view returns (string)",
+      "function isAISubdomain(uint256 tokenId) view returns (bool)",
+      "function getModelType(uint256 tokenId) view returns (string)",
+      "function getActiveCapabilities(uint256 tokenId) view returns (string[])",
+      "function ownerOf(uint256 tokenId) view returns (address)",
+      "function hasAICapability(uint256 tokenId, string capabilityType) view returns (bool)"
+    ];
+
+    // Tokens to display - we know #1 is domain, #2 and #3 are badges
+    const SHOWCASE_TOKENS = [1, 2, 3];
+
+    async function loadShowcase() {
+      try {
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+        const showcaseDiv = document.getElementById('showcaseGrid');
+        const comparisonTable = document.getElementById('comparisonTable');
+        
+        showcaseDiv.innerHTML = '';
+        comparisonTable.innerHTML = '';
+
+        for (const tokenId of SHOWCASE_TOKENS) {
+          try {
+            const domain = await contract.getDomainByTokenId(tokenId);
+            const isBadge = await contract.isAISubdomain(tokenId);
+            const owner = await contract.ownerOf(tokenId);
+
+            let modelType = null;
+            let capabilities = [];
+
+            if (isBadge) {
+              modelType = await contract.getModelType(tokenId);
+              capabilities = await contract.getActiveCapabilities(tokenId);
+            }
+
+            // Create showcase card
+            const card = createShowcaseCard(tokenId, domain, isBadge, owner, modelType, capabilities);
+            showcaseDiv.appendChild(card);
+
+            // Add to comparison table
+            const row = createComparisonRow(tokenId, domain, isBadge, modelType, capabilities);
+            comparisonTable.appendChild(row);
+          } catch (error) {
+            console.error(`Error loading token ${tokenId}:`, error);
+          }
+        }
+
+        document.getElementById('loading').style.display = 'none';
+      } catch (error) {
+        console.error("Error loading showcase:", error);
+        document.getElementById('loading').innerHTML = `
+          <div>
+            <div style="color: #ff4444; font-size: 1.5em; margin-bottom: 20px;">⚠️ Error Loading Data</div>
+            <p style="color: #888;">${error.message}</p>
+            <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 30px; background: #00ff88; border: none; border-radius: 8px; cursor: pointer;">
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function createShowcaseCard(tokenId, domain, isBadge, owner, modelType, capabilities) {
+      const card = document.createElement('div');
+      card.className = 'showcase-card';
+
+      const allCaps = ['ai_vision', 'ai_communication', 'ai_memory', 'ai_reasoning'];
+      const capIcons = {
+        'ai_vision': '👁️',
+        'ai_communication': '🗨️',
+        'ai_memory': '🧠',
+        'ai_reasoning': '🎯'
+      };
+
+      let capabilityHTML = '';
+      if (isBadge) {
+        capabilityHTML = `
+          <div style="margin-top: 15px;">
+            <strong>Capabilities:</strong>
+            <div class="capability-grid">
+              ${allCaps.map(cap => {
+                const unlocked = capabilities.includes(cap);
+                return `
+                  <div class="capability-item">
+                    <span class="cap-icon ${unlocked ? 'unlocked' : 'locked'}">${capIcons[cap] || '❓'}</span>
+                    <span style="color: ${unlocked ? '#00ff88' : '#666'}; font-size: 0.9em;">${cap.replace('ai_', '')}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      const typeLabel = isBadge ? 'AI Badge' : 'Domain';
+      const typeClass = isBadge ? 'badge' : 'domain';
+      const icon = isBadge ? '🤖' : '🌐';
+
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="domain-name">${domain}</div>
+          <span class="token-id">#${tokenId}</span>
+        </div>
+        <span class="badge-type ${typeClass}">${typeLabel}</span>
+        ${isBadge ? `<div class="model-type">🧠 ${modelType}</div>` : ''}
+        <div class="badge-icon">${icon}</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-value">${isBadge ? capabilities.length : 'N/A'}</div>
+            <div class="stat-label">Capabilities</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${isBadge ? '✅' : '➖'}</div>
+            <div class="stat-label">AI Enabled</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="font-size: 0.7em; word-break: break-all;">${owner.slice(0, 6)}…${owner.slice(-4)}</div>
+            <div class="stat-label">Owner</div>
+          </div>
+        </div>
+        ${capabilityHTML}
+      `;
+
+      return card;
+    }
+
+    function createComparisonRow(tokenId, domain, isBadge, modelType, capabilities) {
+      const row = document.createElement('tr');
+      
+      const capDisplay = isBadge && capabilities.length > 0 
+        ? capabilities.map(c => `<span class="feature-tag">${c.replace('ai_', '')}</span>`).join(' ')
+        : (isBadge ? 'No capabilities' : 'N/A');
+
+      row.innerHTML = `
+        <td><strong>#${tokenId}</strong></td>
+        <td>${isBadge ? '🤖 Badge' : '🌐 Domain'}</td>
+        <td>${isBadge ? modelType : '—'}</td>
+        <td>${capDisplay}</td>
+      `;
+
+      return row;
+    }
+
+    // Load on page load
+    loadShowcase();
+  </script>
+</body>
+</html>

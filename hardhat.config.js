@@ -1,8 +1,12 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config();
+const dotenv = require("dotenv");
 
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
+dotenv.config();
+
+/**
+ * @type import('hardhat/config').HardhatUserConfig
+ */
+const config = {
   solidity: {
     version: "0.8.30",
     settings: {
@@ -11,7 +15,7 @@ module.exports = {
         runs: 1000,
       },
       viaIR: true,
-      evmVersion: "cancun"
+      evmVersion: "cancun",
     },
   },
   networks: {
@@ -30,3 +34,5 @@ module.exports = {
     apiKey: process.env.POLYGONSCAN_API_KEY,
   },
 };
+
+module.exports = config;

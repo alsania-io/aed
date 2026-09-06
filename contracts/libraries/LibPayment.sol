@@ -16,7 +16,7 @@ library LibPayment {
     using LibAppStorage for AppStorage;
 
     // USDC address on Polygon (update for testnet/mainnet)
-    address constant USDC_ADDRESS = 0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582; // Polygon Amoy testnet USDC
+    address constant USDC_ADDRESS = 0x8B0180f2101c8260d49339abfEe87927412494B4; // Polygon Amoy testnet USDC
 
     event PaymentReceived(address indexed payer, uint256 amount, string feeType);
     event FeeCollected(address indexed collector, uint256 amount);

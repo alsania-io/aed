@@ -28,7 +28,7 @@ curl -X POST http://localhost:3001/api/chat \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Hello AI",
-    "walletAddress": "0x78dB155AA7f39A8D13a0e1E8EEB41d71e2ce3F43",
+    "walletAddress": "0xC8D6AB0928F9A8bAbB77B739401504f3354580cD",
     "badgeTokenId": "6"
   }'
 ```

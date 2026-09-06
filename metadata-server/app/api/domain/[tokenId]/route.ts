@@ -3,11 +3,12 @@ import { buildMetadata } from '@/lib/metadata';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { tokenId: string } }
+  { params }: { params: Promise<{ tokenId: string }> }
 ) {
   try {
-    const tokenId = BigInt(params.tokenId);
-    const metadata = await buildMetadata(tokenId, false);
+    const { tokenId } = await params;
+    const tokenIdBigInt = BigInt(tokenId);
+    const metadata = await buildMetadata(tokenIdBigInt, false);
     
     return NextResponse.json(metadata, {
       headers: {

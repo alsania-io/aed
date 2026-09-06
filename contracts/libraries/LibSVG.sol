@@ -130,7 +130,7 @@ library LibSVG {
         return string(abi.encodePacked(
             '<g transform="translate(50, 50)">',
             '<circle r="25" fill="#9D4EDD" opacity="0.9" stroke="#FFFFFF" stroke-width="2"/>',
-            '<text x="0" y="6" font-size="20" text-anchor="middle" fill="#FFFFFF">🤖</text>',
+            '<text x="0" y="6" font-size="20" text-anchor="middle" fill="#FFFFFF">', unicode"🤖", '</text>',
             '<text x="0" y="-30" font-size="8" text-anchor="middle" fill="#9D4EDD" font-weight="bold">',
             truncated,
             '</text>',

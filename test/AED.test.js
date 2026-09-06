@@ -101,6 +101,8 @@ describe("AED - Alsania Enhanced Domains", function () {
 
             expect(info.profileURI).to.equal(`${BASE_METADATA_URI}meta.aed/profile.json`);
             expect(info.imageURI).to.equal(DEFAULT_DOMAIN_IMAGE_URI);
+        });
+
         it("Should estimate registration costs correctly", async function () {
             const cost = await aed.estimateDomainPrice("alsania", true);
             const tldPrice = await aed.getTLDPrice("alsania");

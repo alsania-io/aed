@@ -1,9 +1,9 @@
 window.AED_CONFIG = {
-  contractAddress: "0x6452DCd7Bbee694223D743f09FF07c717Eeb34DF",
+  contractAddress: "0x9276f78c574b737d914704D9096777C1929ec1cB",
   network: {
     name: "Polygon Amoy",
     chainIdHex: "0x13882",
-    rpcUrl: "https://rpc-amoy.polygon.technology"
+    rpcUrl: "https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO"
   },
   pricing: {
     fallbackPremiumTld: "1",

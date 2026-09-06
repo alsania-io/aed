@@ -1,0 +1,8 @@
+{
+  "network": "amoy",
+  "proxy": "0x9276f78c574b737d914704D9096777C1929ec1cB",
+  "implementation": "0xD6Fe7e8EBa6AeA4f49954bC4a14D0304Eacaf94B",
+  "admin": "0xC8D6AB0928F9A8bAbB77B739401504f3354580cD",
+  "usdc": "0x8B0180f2101c8260d49339abfEe87927412494B4",
+  "timestamp": "2026-09-06T11:40:13.866Z"
+}

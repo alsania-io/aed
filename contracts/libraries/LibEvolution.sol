@@ -100,7 +100,7 @@ library LibEvolution {
         if (typeHash == keccak256("communication_expert")) return ("#FF5A36", "C");
         if (typeHash == keccak256("memory_keeper")) return ("#FFD700", "M");
         if (typeHash == keccak256("reasoning_master")) return ("#9D4EDD", "R");
-        if (typeHash == keccak256("bridge_master")) return ("#9D4EDD", "⟷");
+        if (typeHash == keccak256("bridge_master")) return ("#9D4EDD", unicode"⟷");
         if (typeHash == keccak256("early_adopter")) return ("#FFD700", "E");
 
         return ("#FFFFFF", "F"); // Default

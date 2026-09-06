@@ -163,7 +163,7 @@ async function runDemo() {
   const scenarios = [
     {
       name: 'Scenario 1: User with badge + capability',
-      userAddress: '0x78dB155AA7f39A8D13a0e1E8EEB41d71e2ce3F43', // Deployer
+      userAddress: '0xC8D6AB0928F9A8bAbB77B739401504f3354580cD', // Alsania Fee Wallet
       badge: 'sigmasauer07.alsania', // Token ID: 1
       request: {
         prompt: 'Send a message to other agents',
@@ -172,7 +172,7 @@ async function runDemo() {
     },
     {
       name: 'Scenario 2: User with badge but missing capability',
-      userAddress: '0x78dB155AA7f39A8D13a0e1E8EEB41d71e2ce3F43',
+      userAddress: '0xC8D6AB0928F9A8bAbB77B739401504f3354580cD', // Alsania Fee Wallet
       badge: 'sigmasauer07.alsania',
       request: {
         prompt: 'Analyze this image',

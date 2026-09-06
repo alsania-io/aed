@@ -1,0 +1,174 @@
+{
+  "abi": [
+    {
+      "type": "function",
+      "name": "registerDomain",
+      "inputs": [
+        { "name": "name", "type": "string", "internalType": "string" },
+        { "name": "tld", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "createAISubdomain",
+      "inputs": [
+        { "name": "label", "type": "string", "internalType": "string" },
+        { "name": "parentDomain", "type": "string", "internalType": "string" },
+        { "name": "modelType", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "purchaseAICapability",
+      "inputs": [
+        { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+        { "name": "capabilityType", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "isAISubdomain",
+      "inputs": [{ "name": "tokenId", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getModelType",
+      "inputs": [{ "name": "tokenId", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "string" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getActiveCapabilities",
+      "inputs": [{ "name": "tokenId", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "string[]" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "ownerOf",
+      "inputs": [{ "name": "tokenId", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getDomainByTokenId",
+      "inputs": [{ "name": "tokenId", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "string" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "balanceOf",
+      "inputs": [{ "name": "owner", "type": "address", "internalType": "address" }],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "hasAICapability",
+      "inputs": [
+        { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+        { "name": "capabilityType", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "domainExists",
+      "inputs": [{ "name": "", "type": "string" }],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "domainToTokenId",
+      "inputs": [{ "name": "", "type": "string" }],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "tokenIdToDomain",
+      "inputs": [{ "name": "", "type": "uint256" }],
+      "outputs": [{ "name": "", "type": "string" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "validTlds",
+      "inputs": [{ "name": "", "type": "string" }],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "freeTlds",
+      "inputs": [{ "name": "", "type": "string" }],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "tldPrices",
+      "inputs": [{ "name": "", "type": "string" }],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "nextTokenId",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "feeCollector",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "totalRevenue",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "paused",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "aiModelType",
+      "inputs": [{ "name": "", "type": "uint256" }],
+      "outputs": [{ "name": "", "type": "string" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "aiCapabilities",
+      "inputs": [
+        { "name": "", "type": "uint256" },
+        { "name": "", "type": "string" }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view"
+    }
+  ]
+}

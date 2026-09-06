@@ -1,25 +1,35 @@
 import { ethers } from 'ethers';
 
 export const ABI = [
+  // Core view functions
   'function tokenURI(uint256) view returns (string)',
   'function ownerOf(uint256) view returns (address)',
   'function name() view returns (string)',
   'function symbol() view returns (string)',
-  'function getGlobalDescription() view returns (string)',
-  'function getDomainInfo(uint256) view returns (tuple(string name, string tld, string profileURI, string imageURI, uint256 subdomainCount, uint256 mintFee, uint64 expiresAt, bool feeEnabled, bool isSubdomain, address owner))',
+  
+  // Domain functions
   'function getDomainByTokenId(uint256) view returns (string)',
-  'function getEvolutionLevel(uint256) view returns (uint256)',
-  'function getFragmentCount(uint256) view returns (uint256)',
-  'function getTokenFragments(uint256) view returns (tuple(string fragmentType, uint256 earnedAt, bytes32 eventHash)[])',
-  'function hasFragment(uint256, string) view returns (bool)',
+  'function domainExists(string) view returns (bool)',
+  'function domainToTokenId(string) view returns (uint256)',
+  'function tokenIdToDomain(uint256) view returns (string)',
+  
+  // Badge functions
+  'function isAISubdomain(uint256) view returns (bool)',
+  'function getModelType(uint256) view returns (string)',
+  'function getActiveCapabilities(uint256) view returns (string[])',
+  'function hasAICapability(uint256, string) view returns (bool)',
+  'function aiModelType(uint256) view returns (string)',
+  
+  // Balance & ownership
+  'function balanceOf(address) view returns (uint256)'
 ];
 
-const RPC_URL = process.env.AMOY_RPC || process.env.RPC_URL;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0x6452DCd7Bbee694223D743f09FF07c717Eeb34DF";
+const RPC_URL = process.env.AMOY_RPC || 'https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x9276f78c574b737d914704D9096777C1929ec1cB';
 
 let provider: ethers.JsonRpcProvider | null = null;
 let contract: ethers.Contract | null = null;
-let globalDescription = '';
+let globalDescription = 'Alsania Enhanced Domain';
 
 export function initializeContract() {
   if (!RPC_URL || !CONTRACT_ADDRESS) {
@@ -38,19 +48,8 @@ export function initializeContract() {
 }
 
 export async function loadGlobalDescription() {
-  if (!contract) {
-    initializeContract();
-  }
-
-  if (contract) {
-    try {
-      globalDescription = await contract.getGlobalDescription();
-      console.log('Global description loaded:', globalDescription || 'None set');
-    } catch (error) {
-      console.warn('Could not fetch global description:', error);
-      globalDescription = 'Alsania Enhanced Domain';
-    }
-  }
+  // Minimal contract doesn't have getGlobalDescription, use default
+  globalDescription = 'Alsania Enhanced Domain';
 }
 
 export function getContract() {

@@ -5,6 +5,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "./core/AppStorage.sol";
 import "./libraries/LibAppStorage.sol";
@@ -258,6 +259,168 @@ contract AEDImplementation is
         return LibBadgeCreator.calculateCapabilityFee(tokenId);
     }
 
+    // ===== REPUTATION SYSTEM =====
+
+    event FeedbackSubmitted(
+        uint256 indexed badgeId,
+        address indexed rater,
+        uint8 score,
+        bytes32 commentHash,
+        uint256 timestamp
+    );
+
+    event FeedbackWithdrawn(
+        uint256 indexed badgeId,
+        address indexed rater,
+        uint256 stakeReturned,
+        uint256 timestamp
+    );
+
+    /**
+     * @dev Leave feedback for a badge (AI subdomain)
+     * Requires staking 1 ALSA token to prevent spam
+     */
+    function leaveFeedback(
+        uint256 badgeId,
+        uint8 score,
+        string calldata comment
+    ) external nonReentrant whenNotPaused {
+        AppStorage storage s = LibAppStorage.appStorage();
+        
+        require(s.isAISubdomain[badgeId], "Not a badge");
+        require(score >= 1 && score <= 5, "Score must be 1-5");
+        require(!s.badgeReputation[badgeId].hasRated[msg.sender], "Already rated");
+        
+        // Transfer ALSA stake
+        IERC20 alsaToken = IERC20(s.alsaTokenAddress);
+        require(alsaToken.balanceOf(msg.sender) >= s.alsaStakeAmount, "Insufficient ALSA balance");
+        require(alsaToken.transferFrom(msg.sender, address(this), s.alsaStakeAmount), "ALSA transfer failed");
+        
+        // Update reputation
+        BadgeReputationData storage badgeRep = s.badgeReputation[badgeId];
+        
+        uint256 newTotalScore = badgeRep.reputation.totalScore + score;
+        uint256 newTotalRatings = badgeRep.reputation.totalRatings + 1;
+        uint256 newAverageScore = newTotalScore / newTotalRatings;
+        
+        badgeRep.reputation.totalScore = newTotalScore;
+        badgeRep.reputation.totalRatings = newTotalRatings;
+        badgeRep.reputation.averageScore = newAverageScore;
+        
+        badgeRep.hasRated[msg.sender] = true;
+        badgeRep.stakedAmount[msg.sender] = s.alsaStakeAmount;
+        badgeRep.stakeReleaseTime[msg.sender] = block.timestamp + 7 days;
+        badgeRep.lastFeedbackTimestamp = block.timestamp;
+        
+        // Store feedback history
+        badgeRep.feedbackHistory.push(FeedbackRecord({
+            rater: msg.sender,
+            score: score,
+            comment: comment,
+            timestamp: block.timestamp,
+            isActive: true
+        }));
+        
+        emit FeedbackSubmitted(badgeId, msg.sender, score, keccak256(bytes(comment)), block.timestamp);
+        
+        // Award fragment for first feedback
+        if (newTotalRatings == 1) {
+            bytes32 eventHash = keccak256(abi.encodePacked("first_feedback", badgeId, block.timestamp));
+            LibEvolution.awardFragment(badgeId, "first_feedback", eventHash);
+        }
+    }
+
+    /**
+     * @dev Get reputation data for a badge
+     */
+    function getBadgeReputation(uint256 badgeId) external view returns (
+        uint256 averageScore,
+        uint256 totalRatings,
+        uint256 displayScore
+    ) {
+        AppStorage storage s = LibAppStorage.appStorage();
+        require(s.isAISubdomain[badgeId], "Not a badge");
+        
+        BadgeReputationData storage badgeRep = s.badgeReputation[badgeId];
+        
+        averageScore = badgeRep.reputation.averageScore;
+        totalRatings = badgeRep.reputation.totalRatings;
+        
+        // Apply decay if no recent feedback
+        uint256 daysSinceLastFeedback = (block.timestamp - badgeRep.lastFeedbackTimestamp) / 1 days;
+        if (daysSinceLastFeedback > s.reputationDecayDays && badgeRep.reputation.totalRatings > 0) {
+            uint256 decayFactor = 1 * (s.reputationDecayDays / 180); // 50% decay after 180 days
+            displayScore = averageScore * decayFactor / 1;
+        } else {
+            displayScore = averageScore;
+        }
+        
+        // Only show reputation if enough ratings
+        if (totalRatings < s.minRatingsForDisplay) {
+            displayScore = 0;
+        }
+    }
+
+    /**
+     * @dev Get feedback history for a badge
+     */
+    function getFeedbackHistory(uint256 badgeId, uint256 start, uint256 limit) external view returns (
+        address[] memory raters,
+        uint8[] memory scores,
+        uint256[] memory timestamps
+    ) {
+        AppStorage storage s = LibAppStorage.appStorage();
+        require(s.isAISubdomain[badgeId], "Not a badge");
+        
+        BadgeReputationData storage badgeRep = s.badgeReputation[badgeId];
+        uint256 total = badgeRep.feedbackHistory.length;
+        require(start < total, "Start out of bounds");
+        
+        uint256 end = start + limit;
+        if (end > total) end = total;
+        
+        uint256 resultCount = end - start;
+        raters = new address[](resultCount);
+        scores = new uint8[](resultCount);
+        timestamps = new uint256[](resultCount);
+        
+        for (uint256 i = start; i < end; i++) {
+            FeedbackRecord storage record = badgeRep.feedbackHistory[i];
+            uint256 idx = i - start;
+            raters[idx] = record.rater;
+            scores[idx] = record.score;
+            timestamps[idx] = record.timestamp;
+        }
+    }
+
+    /**
+     * @dev Withdraw staked ALSA after 7 days
+     */
+    function withdrawStake(uint256 badgeId) external nonReentrant {
+        AppStorage storage s = LibAppStorage.appStorage();
+        
+        require(s.badgeReputation[badgeId].hasRated[msg.sender], "No stake found");
+        require(block.timestamp >= s.badgeReputation[badgeId].stakeReleaseTime[msg.sender], "Stake still locked");
+        
+        uint256 stakeAmount = s.badgeReputation[badgeId].stakedAmount[msg.sender];
+        require(stakeAmount > 0, "No stake to withdraw");
+        
+        s.badgeReputation[badgeId].stakedAmount[msg.sender] = 0;
+        
+        IERC20 alsaToken = IERC20(s.alsaTokenAddress);
+        require(alsaToken.transfer(msg.sender, stakeAmount), "ALSA transfer failed");
+        
+        emit FeedbackWithdrawn(badgeId, msg.sender, stakeAmount, block.timestamp);
+    }
+
+    /**
+     * @dev Set ALSA token address (admin only)
+     */
+    function setAlsaTokenAddress(address tokenAddress) external onlyAdmin {
+        AppStorage storage s = LibAppStorage.appStorage();
+        s.alsaTokenAddress = tokenAddress;
+    }
+
     // ===== METADATA =====
 
     function setProfileURI(uint256 tokenId, string calldata uri) external onlyTokenOwner(tokenId) {
@@ -401,6 +564,14 @@ contract AEDImplementation is
         LibEnhancements.addFeature(featureName, price, flag);
     }
 
+    function setFeatureFlags(string[] calldata _featureNames, uint256[] calldata _flags) external onlyAdmin {
+        require(_featureNames.length == _flags.length, "Arrays length mismatch");
+        AppStorage storage s = LibAppStorage.appStorage();
+        for (uint256 i = 0; i < _featureNames.length; i++) {
+            s.featureFlags[_featureNames[i]] = _flags[i];
+        }
+    }
+
     function setGlobalDescription(string calldata description) external onlyAdmin {
         LibAppStorage.appStorage().globalDescription = description;
     }
@@ -409,8 +580,6 @@ contract AEDImplementation is
         return LibAppStorage.appStorage().globalDescription;
     }
     
-
-
     function pause() external onlyAdmin {
         LibAdmin.pauseContract();
     }
@@ -554,7 +723,7 @@ contract AEDImplementation is
         return LibAppStorage.appStorage().owners[tokenId] != address(0);
     }
 
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view returns (bool) {
+    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view override returns (bool) {
         AppStorage storage s = LibAppStorage.appStorage();
         address owner = s.owners[tokenId];
         return (spender == owner ||
@@ -584,7 +753,7 @@ contract AEDImplementation is
         emit Transfer(from, to, tokenId);
     }
 
-    function _approve(address to, uint256 tokenId) internal {
+    function _approve(address to, uint256 tokenId) internal override {
         AppStorage storage s = LibAppStorage.appStorage();
         s.tokenApprovals[tokenId] = to;
         emit Approval(ownerOf(tokenId), to, tokenId);
@@ -599,10 +768,10 @@ contract AEDImplementation is
 
     function _customSafeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal {
         _customTransfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, data), "Transfer to non ERC721Receiver");
+        require(_safeCheck721Received(from, to, tokenId, data), "Transfer to non ERC721Receiver");
     }
 
-    function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory data) private returns (bool) {
+    function _safeCheck721Received(address from, address to, uint256 tokenId, bytes memory data) internal returns (bool) {
         if (to.code.length > 0) {
             try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, data) returns (bytes4 retval) {
                 return retval == IERC721Receiver.onERC721Received.selector;
@@ -651,8 +820,6 @@ contract AEDImplementation is
             }
         }
     }
-
-
 
     function _registerFeature(AppStorage storage s, string memory name, uint256 price, uint256 flag) private {
         if (!s.featureExists[name]) {

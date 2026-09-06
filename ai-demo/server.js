@@ -151,5 +151,5 @@ app.listen(PORT, () => {
   console.log(`\n✨ Example request:`);
   console.log(`curl -X POST http://localhost:${PORT}/api/chat \\`);
   console.log(`  -H "Content-Type: application/json" \\`);
-  console.log(`  -d '{"message":"Hello","walletAddress":"0x78dB155AA7f39A8D13a0e1E8EEB41d71e2ce3F43","badgeTokenId":"1"}'`);
+  console.log(`  -d '{"message":"Hello","walletAddress":"0xC8D6AB0928F9A8bAbB77B739401504f3354580cD","badgeTokenId":"1"}'`);
 });

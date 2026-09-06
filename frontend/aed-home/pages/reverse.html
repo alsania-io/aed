@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reverse Resolution - AED</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 {
+      font-size: 2.5em;
+      color: #00ff88;
+      text-shadow: 0 0 20px rgba(0,255,136,0.5);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+    
+    .wallet-section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .wallet-status .connected { color: #00ff88; }
+    .wallet-status .disconnected { color: #ff4444; }
+    
+    #walletButton {
+      padding: 10px 25px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1em;
+    }
+    #walletButton:hover { transform: scale(1.05); opacity: 0.9; }
+    #walletButton.connected { background: linear-gradient(135deg, #00ff88, #00cc66); }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h2 { color: #00ff88; margin-bottom: 15px; font-size: 1.2em; }
+    
+    .reverse-display {
+      background: rgba(0,255,136,0.05);
+      border: 1px solid rgba(0,255,136,0.2);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .reverse-display .label { color: #888; font-size: 0.9em; }
+    .reverse-display .domain {
+      font-size: 2em;
+      font-weight: 700;
+      color: #00ff88;
+      margin: 10px 0;
+    }
+    .reverse-display .address {
+      font-size: 0.9em;
+      color: #667eea;
+      font-family: monospace;
+    }
+    .reverse-display .status { color: #888; font-style: italic; }
+    
+    .input-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .input-group input, .input-group select {
+      flex: 1;
+      min-width: 150px;
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1em;
+    }
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: #00ff88;
+    }
+    .input-group input::placeholder { color: #666; }
+    
+    .btn {
+      padding: 10px 25px;
+      background: #00ff88;
+      border: none;
+      border-radius: 8px;
+      color: #0a0e27;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1em;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: scale(1.05); opacity: 0.85; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn.secondary { background: #667eea; color: white; }
+    .btn.danger { background: #ff4444; color: white; }
+    
+    .result {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid #667eea;
+    }
+    .result.success { border-left-color: #00ff88; }
+    .result.error { border-left-color: #ff4444; }
+    .result pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-size: 0.85em;
+      color: #aaa;
+    }
+    
+    .status-msg {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .status-msg.success { background: rgba(0,255,136,0.1); border: 1px solid #00ff88; color: #00ff88; }
+    .status-msg.error { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; color: #ff4444; }
+    .status-msg.info { background: rgba(102,126,234,0.1); border: 1px solid #667eea; color: #667eea; }
+    
+    .domain-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .domain-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .domain-item .name { font-weight: 600; }
+    .domain-item .token-id { color: #888; font-size: 0.8em; }
+    .domain-item .is-reverse {
+      color: #00ff88;
+      font-size: 0.8em;
+      background: rgba(0,255,136,0.1);
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+    
+    .loading-text { text-align: center; color: #666; padding: 20px; }
+    .hidden { display: none; }
+    
+    .info-box {
+      background: rgba(102,126,234,0.1);
+      border: 1px solid rgba(102,126,234,0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .info-box p { color: #aaa; line-height: 1.6; }
+    .info-box strong { color: #667eea; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav style="display:flex;gap:15px;justify-content:center;margin:0 0 20px 0;flex-wrap:wrap;">
+    <a href="/pages/showcase-minimal.html" style="color:#00ff88;text-decoration:none;padding:8px 16px;border:1px solid rgba(0,255,136,0.3);border-radius:8px;">🏆 Showcase</a>
+    <a href="/pages/badges-minimal.html" style="color:#00ff88;text-decoration:none;padding:8px 16px;border:1px solid rgba(0,255,136,0.3);border-radius:8px;">🎯 Badges</a>
+    <a href="/pages/reverse.html" style="color:#00ff88;text-decoration:none;padding:8px 16px;border:1px solid rgba(0,255,136,0.3);border-radius:8px;background:rgba(0,255,136,0.1);">🔗 Reverse</a>
+    <a href="/pages/simple.html" style="color:#00ff88;text-decoration:none;padding:8px 16px;border:1px solid rgba(0,255,136,0.3);border-radius:8px;">⚡ Simple</a>
+  </nav>
+  <h1>🔗 Reverse Resolution</h1>
+  <p class="subtitle">Map your address to a domain name</p>
+
+  <div class="wallet-section">
+    <div>
+      <div class="wallet-status">
+        Status: <span id="walletStatus" class="disconnected">Not Connected</span>
+      </div>
+      <div id="walletAddress" style="font-size: 0.8em; color: #666; margin-top: 5px;"></div>
+    </div>
+    <button id="walletButton">Connect Wallet</button>
+  </div>
+
+  <!-- Current Reverse Record -->
+  <div class="card">
+    <h2>📋 Current Reverse Record</h2>
+    <div id="reverseDisplay">
+      <div class="reverse-display">
+        <div class="label">Reverse Resolution for</div>
+        <div class="address" id="currentAddress">Not connected</div>
+        <div class="domain" id="currentDomain">—</div>
+        <div class="status" id="currentStatus">Connect wallet to view</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Set Reverse Record -->
+  <div class="card">
+    <h2>✏️ Set Reverse Record</h2>
+    <div class="info-box">
+      <p>Set a domain name to resolve to your wallet address. Anyone can look up your address and see your chosen domain.</p>
+    </div>
+    <div class="input-group">
+      <input type="text" id="domainInput" placeholder="Domain name (e.g. aegis.aed)">
+      <button class="btn" id="setReverseBtn">Set Reverse</button>
+    </div>
+    <div id="setResult"></div>
+  </div>
+
+  <!-- Clear Reverse Record -->
+  <div class="card">
+    <h2>🗑️ Clear Reverse Record</h2>
+    <button class="btn danger" id="clearReverseBtn">Clear Reverse</button>
+    <div id="clearResult"></div>
+  </div>
+
+  <!-- Lookup Address -->
+  <div class="card">
+    <h2>🔍 Lookup Address</h2>
+    <div class="input-group">
+      <input type="text" id="lookupInput" placeholder="Wallet address to look up">
+      <button class="btn secondary" id="lookupBtn">Lookup</button>
+    </div>
+    <div id="lookupResult"></div>
+  </div>
+
+  <!-- My Domains -->
+  <div class="card">
+    <h2>📦 My Domains</h2>
+    <button class="btn secondary" id="refreshDomainsBtn" style="margin-bottom: 15px;">Refresh</button>
+    <div id="domainList"><div class="loading-text">Connect wallet to view your domains</div></div>
+  </div>
+</div>
+
+<script>
+  const CONTRACT_ADDRESS = "0x9276f78c574b737d914704D9096777C1929ec1cB";
+  const RPC_URL = "https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO";
+  
+  const CONTRACT_ABI = [
+    "function setReverse(string domain)",
+    "function clearReverse()",
+    "function getReverse(address) view returns (string)",
+    "function getReverseOwner(string) view returns (address)",
+    "function ownerOf(uint256) view returns (address)",
+    "function getDomainByTokenId(uint256) view returns (string)",
+    "function balanceOf(address) view returns (uint256)",
+    "function domainExists(string) view returns (bool)",
+    "function domainToTokenId(string) view returns (uint256)"
+  ];
+
+  let provider, signer, contract, walletAddress;
+
+  async function connectWallet() {
+    if (typeof window.ethereum === 'undefined') {
+      alert('Please install MetaMask!');
+      return;
+    }
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      walletAddress = accounts[0];
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+      
+      document.getElementById('walletStatus').textContent = 'Connected';
+      document.getElementById('walletStatus').className = 'connected';
+      document.getElementById('walletAddress').textContent = walletAddress.slice(0, 6) + '…' + walletAddress.slice(-4);
+      document.getElementById('walletButton').textContent = walletAddress.slice(0, 6) + '…' + walletAddress.slice(-4);
+      document.getElementById('walletButton').classList.add('connected');
+      
+      await updateReverseDisplay();
+      await refreshDomains();
+    } catch (err) {
+      console.error('Connection failed:', err);
+      alert('Failed to connect wallet: ' + err.message);
+    }
+  }
+
+  async function updateReverseDisplay() {
+    if (!contract || !walletAddress) return;
+    
+    const addrEl = document.getElementById('currentAddress');
+    const domainEl = document.getElementById('currentDomain');
+    const statusEl = document.getElementById('currentStatus');
+    
+    addrEl.textContent = walletAddress.slice(0, 6) + '…' + walletAddress.slice(-4);
+    
+    try {
+      const domain = await contract.getReverse(walletAddress);
+      if (domain && domain.length > 0) {
+        domainEl.textContent = domain;
+        statusEl.textContent = '✅ Reverse record set';
+        statusEl.style.color = '#00ff88';
+        
+        // Check if the domain is actually owned
+        const owner = await contract.getReverseOwner(domain);
+        if (owner.toLowerCase() === walletAddress.toLowerCase()) {
+          statusEl.textContent = '✅ Reverse record verified';
+        } else {
+          statusEl.textContent = '⚠️ Domain owner mismatch (may be stale)';
+          statusEl.style.color = '#ffaa00';
+        }
+      } else {
+        domainEl.textContent = '—';
+        statusEl.textContent = 'No reverse record set';
+        statusEl.style.color = '#888';
+      }
+    } catch (err) {
+      console.error('Error getting reverse:', err);
+      domainEl.textContent = 'Error';
+      statusEl.textContent = 'Failed to fetch reverse record';
+      statusEl.style.color = '#ff4444';
+    }
+  }
+
+  async function setReverse() {
+    if (!contract) { alert('Connect wallet first!'); return; }
+    const domain = document.getElementById('domainInput').value.trim();
+    const btn = document.getElementById('setReverseBtn');
+    const result = document.getElementById('setResult');
+    
+    if (!domain) {
+      result.innerHTML = `<div class="status-msg error">Please enter a domain name</div>`;
+      return;
+    }
+    
+    btn.disabled = true;
+    result.innerHTML = `<div class="status-msg info">⏳ Setting reverse record...</div>`;
+    
+    try {
+      // Check if domain exists
+      const exists = await contract.domainExists(domain);
+      if (!exists) {
+        result.innerHTML = `<div class="status-msg error">❌ Domain "${domain}" does not exist</div>`;
+        btn.disabled = false;
+        return;
+      }
+      
+      // Check ownership
+      const tokenId = await contract.domainToTokenId(domain);
+      const owner = await contract.ownerOf(tokenId);
+      if (owner.toLowerCase() !== walletAddress.toLowerCase()) {
+        result.innerHTML = `<div class="status-msg error">❌ You don't own "${domain}"</div>`;
+        btn.disabled = false;
+        return;
+      }
+      
+      const tx = await contract.setReverse(domain);
+      result.innerHTML = `<div class="status-msg info">⏳ Waiting for confirmation... (tx: ${tx.hash.slice(0, 10)}...)</div>`;
+      await tx.wait();
+      
+      result.innerHTML = `<div class="status-msg success">✅ Reverse record set to "${domain}"!</div>`;
+      await updateReverseDisplay();
+      await refreshDomains();
+    } catch (err) {
+      result.innerHTML = `<div class="status-msg error">❌ Error: ${err.message}</div>`;
+    }
+    btn.disabled = false;
+  }
+
+  async function clearReverse() {
+    if (!contract) { alert('Connect wallet first!'); return; }
+    const btn = document.getElementById('clearReverseBtn');
+    const result = document.getElementById('clearResult');
+    
+    if (!confirm('Are you sure you want to clear your reverse record?')) return;
+    
+    btn.disabled = true;
+    result.innerHTML = `<div class="status-msg info">⏳ Clearing reverse record...</div>`;
+    
+    try {
+      const tx = await contract.clearReverse();
+      result.innerHTML = `<div class="status-msg info">⏳ Waiting for confirmation... (tx: ${tx.hash.slice(0, 10)}...)</div>`;
+      await tx.wait();
+      
+      result.innerHTML = `<div class="status-msg success">✅ Reverse record cleared!</div>`;
+      await updateReverseDisplay();
+      await refreshDomains();
+    } catch (err) {
+      result.innerHTML = `<div class="status-msg error">❌ Error: ${err.message}</div>`;
+    }
+    btn.disabled = false;
+  }
+
+  async function lookupAddress() {
+    if (!contract) { alert('Connect wallet first!'); return; }
+    const input = document.getElementById('lookupInput').value.trim();
+    const result = document.getElementById('lookupResult');
+    
+    if (!input) {
+      result.innerHTML = `<div class="status-msg error">Please enter an address</div>`;
+      return;
+    }
+    
+    try {
+      const addr = input.startsWith('0x') ? input : '0x' + input;
+      if (!ethers.isAddress(addr)) {
+        result.innerHTML = `<div class="status-msg error">❌ Invalid address format</div>`;
+        return;
+      }
+      
+      const domain = await contract.getReverse(addr);
+      if (domain && domain.length > 0) {
+        const owner = await contract.getReverseOwner(domain);
+        result.innerHTML = `
+          <div class="status-msg success">
+            ✅ <strong>${domain}</strong><br>
+            <span style="color:#888;font-size:0.9em;">Owner: ${owner.slice(0, 6)}…${owner.slice(-4)}</span>
+          </div>
+        `;
+      } else {
+        result.innerHTML = `<div class="status-msg info">No reverse record found for this address</div>`;
+      }
+    } catch (err) {
+      result.innerHTML = `<div class="status-msg error">❌ Error: ${err.message}</div>`;
+    }
+  }
+
+  async function refreshDomains() {
+    if (!contract || !walletAddress) {
+      document.getElementById('domainList').innerHTML = '<div class="loading-text">Connect wallet to view your domains</div>';
+      return;
+    }
+    
+    const container = document.getElementById('domainList');
+    container.innerHTML = '<div class="loading-text">Loading your domains...</div>';
+    
+    try {
+      const balance = await contract.balanceOf(walletAddress);
+      if (balance === 0n) {
+        container.innerHTML = '<div class="loading-text">No domains found. Register one first!</div>';
+        return;
+      }
+      
+      let items = [];
+      const reverse = await contract.getReverse(walletAddress);
+      
+      for (let i = 1; i <= 20; i++) {
+        try {
+          const owner = await contract.ownerOf(i);
+          if (owner.toLowerCase() === walletAddress.toLowerCase()) {
+            const domain = await contract.getDomainByTokenId(i);
+            const isReverse = domain === reverse;
+            items.push({ tokenId: i, domain, isReverse });
+          }
+        } catch {}
+      }
+      
+      if (items.length === 0) {
+        container.innerHTML = '<div class="loading-text">No domains found. Register one first!</div>';
+        return;
+      }
+      
+      container.innerHTML = items.map(item => `
+        <div class="domain-item">
+          <div>
+            <span class="name">🌐 ${item.domain}</span>
+            <span class="token-id">#${item.tokenId}</span>
+          </div>
+          <div>
+            ${item.isReverse ? `<span class="is-reverse">✅ Reverse</span>` : ''}
+            <button class="btn secondary" style="padding: 4px 12px; font-size: 0.8em;" onclick="setReverseFromDomain('${item.domain}')">
+              Set as Reverse
+            </button>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      container.innerHTML = `<div class="loading-text" style="color: #ff4444;">Error loading: ${err.message}</div>`;
+    }
+  }
+
+  // Helper function called from domain list buttons
+  window.setReverseFromDomain = function(domain) {
+    document.getElementById('domainInput').value = domain;
+    document.getElementById('setReverseBtn').click();
+  };
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('walletButton').addEventListener('click', connectWallet);
+    document.getElementById('setReverseBtn').addEventListener('click', setReverse);
+    document.getElementById('clearReverseBtn').addEventListener('click', clearReverse);
+    document.getElementById('lookupBtn').addEventListener('click', lookupAddress);
+    document.getElementById('refreshDomainsBtn').addEventListener('click', refreshDomains);
+    
+    // Enter key support
+    document.getElementById('domainInput').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') document.getElementById('setReverseBtn').click();
+    });
+    document.getElementById('lookupInput').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') document.getElementById('lookupBtn').click();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AED Badge Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 {
+      font-size: 2.5em;
+      color: #00ff88;
+      text-shadow: 0 0 20px rgba(0,255,136,0.5);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+    
+    .wallet-section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .wallet-status {
+      color: #888;
+      font-size: 0.9em;
+    }
+    .wallet-status .connected { color: #00ff88; }
+    .wallet-status .disconnected { color: #ff4444; }
+    
+    #walletButton {
+      padding: 10px 25px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1em;
+    }
+    #walletButton:hover { transform: scale(1.05); opacity: 0.9; }
+    #walletButton.connected { background: linear-gradient(135deg, #00ff88, #00cc66); }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h2 { color: #00ff88; margin-bottom: 15px; font-size: 1.2em; }
+    
+    .input-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .input-group input, .input-group select {
+      flex: 1;
+      min-width: 150px;
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1em;
+    }
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: #00ff88;
+    }
+    .input-group input::placeholder { color: #666; }
+    .input-group select option { background: #1a1f3a; }
+    
+    .btn {
+      padding: 10px 25px;
+      background: #00ff88;
+      border: none;
+      border-radius: 8px;
+      color: #0a0e27;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1em;
+    }
+    .btn:hover { transform: scale(1.05); opacity: 0.85; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn.secondary { background: #667eea; color: white; }
+    .btn.danger { background: #ff4444; color: white; }
+    
+    .result {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid #667eea;
+    }
+    .result.success { border-left-color: #00ff88; }
+    .result.error { border-left-color: #ff4444; }
+    .result pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-size: 0.85em;
+      color: #aaa;
+    }
+    
+    .badge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .badge-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .badge-item .name { font-weight: 600; }
+    .badge-item .caps { color: #667eea; font-size: 0.85em; }
+    .badge-item .token-id { color: #888; font-size: 0.8em; }
+    
+    .loading-text { text-align: center; color: #666; padding: 20px; }
+    .hidden { display: none; }
+    
+    .status-msg {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .status-msg.success { background: rgba(0,255,136,0.1); border: 1px solid #00ff88; color: #00ff88; }
+    .status-msg.error { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; color: #ff4444; }
+    .status-msg.info { background: rgba(102,126,234,0.1); border: 1px solid #667eea; color: #667eea; }
+    
+    .tx-hash {
+      font-size: 0.8em;
+      color: #667eea;
+      word-break: break-all;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🎯 AED Badge Manager</h1>
+  <p class="subtitle">Mint and manage AI badges on Polygon Amoy</p>
+
+  <div class="wallet-section">
+    <div>
+      <div class="wallet-status">
+        Status: <span id="walletStatus" class="disconnected">Not Connected</span>
+      </div>
+      <div id="walletAddress" style="font-size: 0.8em; color: #666; margin-top: 5px;"></div>
+    </div>
+    <button id="walletButton">Connect Wallet</button>
+  </div>
+
+  <!-- Mint Domain -->
+  <div class="card">
+    <h2>📝 Register Domain</h2>
+    <div class="input-group">
+      <input type="text" id="domainName" placeholder="Domain name (e.g. mydomain)" value="aegis">
+      <select id="domainTld">
+        <option value="aed">.aed (free)</option>
+        <option value="alsa">.alsa (free)</option>
+        <option value="07">.07 (free)</option>
+        <option value="alsania">.alsania ($1)</option>
+        <option value="fx">.fx ($1)</option>
+        <option value="echo">.echo ($1)</option>
+      </select>
+      <button class="btn" id="registerDomainBtn">Register</button>
+    </div>
+    <div id="domainResult"></div>
+  </div>
+
+  <!-- Mint Badge -->
+  <div class="card">
+    <h2>🤖 Mint AI Badge</h2>
+    <div class="input-group">
+      <input type="text" id="badgeLabel" placeholder="Badge label (e.g. echo)" value="echo">
+      <input type="text" id="badgeParent" placeholder="Parent domain (e.g. aegis.aed)" value="aegis.aed">
+      <select id="badgeModel">
+        <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+        <option value="gpt-4o">GPT-4o</option>
+        <option value="gemini-pro">Gemini Pro</option>
+        <option value="llama-3">Llama 3</option>
+      </select>
+      <button class="btn" id="mintBadgeBtn">Mint Badge ($1)</button>
+    </div>
+    <div id="badgeResult"></div>
+  </div>
+
+  <!-- Purchase Capability -->
+  <div class="card">
+    <h2>🔓 Purchase Capability</h2>
+    <div class="input-group">
+      <input type="number" id="capTokenId" placeholder="Token ID" value="2">
+      <select id="capType">
+        <option value="ai_vision">👁️ Vision</option>
+        <option value="ai_communication">🗨️ Communication</option>
+        <option value="ai_memory">🧠 Memory</option>
+        <option value="ai_reasoning">🎯 Reasoning</option>
+      </select>
+      <button class="btn" id="purchaseCapBtn">Purchase ($1)</button>
+    </div>
+    <div id="capResult"></div>
+  </div>
+
+  <!-- My Badges -->
+  <div class="card">
+    <h2>📋 My Badges</h2>
+    <button class="btn secondary" id="refreshBadgesBtn" style="margin-bottom: 15px;">Refresh</button>
+    <div id="badgeList"><div class="loading-text">Connect wallet to view your badges</div></div>
+  </div>
+</div>
+
+<script>
+  const CONTRACT_ADDRESS = "0x9276f78c574b737d914704D9096777C1929ec1cB";
+  const USDC_ADDRESS = "0x8B0180f2101c8260d49339abfEe87927412494B4";
+  const RPC_URL = "https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO";
+  
+  const CONTRACT_ABI = [
+    "function registerDomain(string name, string tld) returns (uint256)",
+    "function createAISubdomain(string label, string parentDomain, string modelType) returns (uint256)",
+    "function purchaseAICapability(uint256 tokenId, string capabilityType)",
+    "function isAISubdomain(uint256 tokenId) view returns (bool)",
+    "function getModelType(uint256 tokenId) view returns (string)",
+    "function getActiveCapabilities(uint256 tokenId) view returns (string[])",
+    "function ownerOf(uint256 tokenId) view returns (address)",
+    "function getDomainByTokenId(uint256 tokenId) view returns (string)",
+    "function balanceOf(address owner) view returns (uint256)",
+    "function hasAICapability(uint256 tokenId, string capabilityType) view returns (bool)",
+    "function domainExists(string) view returns (bool)",
+    "function domainToTokenId(string) view returns (uint256)"
+  ];
+
+  const USDC_ABI = [
+    "function approve(address spender, uint256 amount) returns (bool)",
+    "function balanceOf(address account) view returns (uint256)",
+    "function decimals() view returns (uint8)",
+    "function allowance(address owner, address spender) view returns (uint256)"
+  ];
+
+  let provider, signer, contract, usdc, walletAddress;
+
+  async function connectWallet() {
+    if (typeof window.ethereum === 'undefined') {
+      alert('Please install MetaMask!');
+      return;
+    }
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      walletAddress = accounts[0];
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+      usdc = new ethers.Contract(USDC_ADDRESS, USDC_ABI, signer);
+      
+      document.getElementById('walletStatus').textContent = 'Connected';
+      document.getElementById('walletStatus').className = 'connected';
+      document.getElementById('walletAddress').textContent = walletAddress.slice(0, 6) + '…' + walletAddress.slice(-4);
+      document.getElementById('walletButton').textContent = walletAddress.slice(0, 6) + '…' + walletAddress.slice(-4);
+      document.getElementById('walletButton').classList.add('connected');
+      
+      // Check USDC balance
+      await checkUSDC();
+      // Refresh badges
+      await refreshBadges();
+    } catch (err) {
+      console.error('Connection failed:', err);
+      alert('Failed to connect wallet: ' + err.message);
+    }
+  }
+
+  async function checkUSDC() {
+    if (!usdc || !walletAddress) return;
+    try {
+      const decimals = await usdc.decimals();
+      const bal = await usdc.balanceOf(walletAddress);
+      const allowance = await usdc.allowance(walletAddress, CONTRACT_ADDRESS);
+      console.log(`USDC: ${ethers.formatUnits(bal, decimals)}, Allowance: ${ethers.formatUnits(allowance, decimals)}`);
+      
+      // Auto-approve if needed
+      if (allowance < 1000000n) {
+        console.log('Approving USDC...');
+        const tx = await usdc.approve(CONTRACT_ADDRESS, ethers.parseUnits('100', 6));
+        await tx.wait();
+        console.log('USDC approved');
+      }
+    } catch (err) {
+      console.error('USDC check failed:', err);
+    }
+  }
+
+  function showResult(element, message, type) {
+    element.innerHTML = `<div class="status-msg ${type}">${message}</div>`;
+  }
+
+  async function registerDomain() {
+    if (!contract) { alert('Connect wallet first!'); return; }
+    const name = document.getElementById('domainName').value.trim();
+    const tld = document.getElementById('domainTld').value;
+    const btn = document.getElementById('registerDomainBtn');
+    const result = document.getElementById('domainResult');
+    
+    if (!name) { showResult(result, 'Please enter a domain name', 'error'); return; }
+    
+    btn.disabled = true;
+    showResult(result, '⏳ Registering domain...', 'info');
+    
+    try {
+      const fullDomain = name + '.' + tld;
+      const exists = await contract.domainExists(fullDomain);
+      if (exists) {
+        showResult(result, `❌ Domain ${fullDomain} already exists`, 'error');
+        btn.disabled = false;
+        return;
+      }
+      
+      const tx = await contract.registerDomain(name, tld);
+      showResult(result, `⏳ Waiting for confirmation... (tx: ${tx.hash.slice(0, 10)}...)`, 'info');
+      const receipt = await tx.wait();
+      
+      const tokenId = await contract.domainToTokenId(fullDomain);
+      showResult(result, `✅ Domain ${fullDomain} registered! Token #${tokenId}`, 'success');
+      await refreshBadges();
+    } catch (err) {
+      showResult(result, `❌ Error: ${err.message}`, 'error');
+    }
+    btn.disabled = false;
+  }
+
+  async function mintBadge() {
+    if (!contract) { alert('Connect wallet first!'); return; }
+    const label = document.getElementById('badgeLabel').value.trim();
+    const parent = document.getElementById('badgeParent').value.trim();
+    const model = document.getElementById('badgeModel').value;
+    const btn = document.getElementById('mintBadgeBtn');
+    const result = document.getElementById('badgeResult');
+    
+    if (!label || !parent) { showResult(result, 'Please fill in all fields', 'error'); return; }
+    
+    btn.disabled = true;
+    showResult(result, '⏳ Minting badge...', 'info');
+    
+    try {
+      const exists = await contract.domainExists(parent);
+      if (!exists) {
+        showResult(result, `❌ Parent domain ${parent} does not exist`, 'error');
+        btn.disabled = false;
+        return;
+      }
+      
+      const tx = await contract.createAISubdomain(label, parent, model);
+      showResult(result, `⏳ Waiting for confirmation... (tx: ${tx.hash.slice(0, 10)}...)`, 'info');
+      const receipt = await tx.wait();
+      
+      // Find token ID from events
+      let tokenId = 'unknown';
+      for (const log of receipt.logs) {
+        try {
+          const parsed = contract.interface.parseLog(log);
+          if (parsed && parsed.name === 'Transfer') {
+            tokenId = parsed.args.tokenId.toString();
+            break;
+          }
+        } catch {}
+      }
+      
+      showResult(result, `✅ Badge ${label}.${parent} minted! Token #${tokenId}`, 'success');
+      await refreshBadges();
+    } catch (err) {
+      showResult(result, `❌ Error: ${err.message}`, 'error');
+    }
+    btn.disabled = false;
+  }
+
+  async function purchaseCapability() {
+    if (!contract) { alert('Connect wallet first!'); return; }
+    const tokenId = parseInt(document.getElementById('capTokenId').value);
+    const capType = document.getElementById('capType').value;
+    const btn = document.getElementById('purchaseCapBtn');
+    const result = document.getElementById('capResult');
+    
+    if (isNaN(tokenId) || tokenId <= 0) {
+      showResult(result, 'Please enter a valid token ID', 'error');
+      return;
+    }
+    
+    btn.disabled = true;
+    showResult(result, '⏳ Purchasing capability...', 'info');
+    
+    try {
+      const isBadge = await contract.isAISubdomain(tokenId);
+      if (!isBadge) {
+        showResult(result, `❌ Token #${tokenId} is not an AI badge`, 'error');
+        btn.disabled = false;
+        return;
+      }
+      
+      const owner = await contract.ownerOf(tokenId);
+      if (owner.toLowerCase() !== walletAddress.toLowerCase()) {
+        showResult(result, `❌ You don't own token #${tokenId}`, 'error');
+        btn.disabled = false;
+        return;
+      }
+      
+      const hasCap = await contract.hasAICapability(tokenId, capType);
+      if (hasCap) {
+        showResult(result, `⚠️ Capability ${capType} already unlocked`, 'info');
+        btn.disabled = false;
+        return;
+      }
+      
+      const tx = await contract.purchaseAICapability(tokenId, capType);
+      showResult(result, `⏳ Waiting for confirmation... (tx: ${tx.hash.slice(0, 10)}...)`, 'info');
+      await tx.wait();
+      
+      showResult(result, `✅ ${capType} unlocked for token #${tokenId}!`, 'success');
+      await refreshBadges();
+    } catch (err) {
+      showResult(result, `❌ Error: ${err.message}`, 'error');
+    }
+    btn.disabled = false;
+  }
+
+  async function refreshBadges() {
+    if (!contract || !walletAddress) {
+      document.getElementById('badgeList').innerHTML = '<div class="loading-text">Connect wallet to view your badges</div>';
+      return;
+    }
+    
+    const container = document.getElementById('badgeList');
+    container.innerHTML = '<div class="loading-text">Loading your badges...</div>';
+    
+    try {
+      const balance = await contract.balanceOf(walletAddress);
+      if (balance === 0n) {
+        container.innerHTML = '<div class="loading-text">No badges or domains found. Mint one above!</div>';
+        return;
+      }
+      
+      let items = [];
+      // Check tokens 1-50
+      for (let i = 1; i <= 50; i++) {
+        try {
+          const owner = await contract.ownerOf(i);
+          if (owner.toLowerCase() === walletAddress.toLowerCase()) {
+            const domain = await contract.getDomainByTokenId(i);
+            const isBadge = await contract.isAISubdomain(i);
+            let caps = [];
+            let model = '';
+            if (isBadge) {
+              model = await contract.getModelType(i);
+              caps = await contract.getActiveCapabilities(i);
+            }
+            items.push({ tokenId: i, domain, isBadge, model, caps });
+          }
+        } catch {}
+      }
+      
+      if (items.length === 0) {
+        container.innerHTML = '<div class="loading-text">No badges or domains found. Mint one above!</div>';
+        return;
+      }
+      
+      container.innerHTML = items.map(item => `
+        <div class="badge-item">
+          <div>
+            <span class="name">${item.isBadge ? '🤖' : '🌐'} ${item.domain}</span>
+            ${item.isBadge ? `<span style="color: #667eea; font-size: 0.8em; margin-left: 10px;">${item.model}</span>` : ''}
+          </div>
+          <div>
+            ${item.isBadge ? `<span class="caps">${item.caps.length > 0 ? item.caps.join(', ') : 'No capabilities'}</span>` : ''}
+            <span class="token-id">#${item.tokenId}</span>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      container.innerHTML = `<div class="loading-text" style="color: #ff4444;">Error loading: ${err.message}</div>`;
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('walletButton').addEventListener('click', connectWallet);
+    document.getElementById('registerDomainBtn').addEventListener('click', registerDomain);
+    document.getElementById('mintBadgeBtn').addEventListener('click', mintBadge);
+    document.getElementById('purchaseCapBtn').addEventListener('click', purchaseCapability);
+    document.getElementById('refreshBadgesBtn').addEventListener('click', refreshBadges);
+  });
+</script>
+</body>
+</html>
