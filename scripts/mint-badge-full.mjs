@@ -11,7 +11,7 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
 const CONTRACT_ADDRESS = '0x6452DCd7Bbee694223D743f09FF07c717Eeb34DF';
 const USDC_ADDRESS = '0x8B0180f2101c8260d49339abfEe87927412494B4';
 const RPC_URL = 'https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO';
-const PRIVATE_KEY = process.env.PRIVATE_KEY_PROD || 'REDACTED_ROTATE_ME';
+const PRIVATE_KEY = process.env.PRIVATE_KEY_PROD;
 
 const CONTRACT_ABI = [
   'function createAISubdomain(string label, string parentDomain, string modelType) returns (uint256)',

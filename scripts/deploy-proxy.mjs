@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 dotenv.config({ path: resolve(__dirname, '../.env') });
 
 const RPC_URL = 'https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO';
-const PRIVATE_KEY = process.env.PRIVATE_KEY_PROD || 'REDACTED_ROTATE_ME';
+const PRIVATE_KEY = process.env.PRIVATE_KEY_PROD;
 const IMPLEMENTATION = '0x8B94685Cdba7172dAB5761Fdab6f78d7B43E857D';
 const ADMIN = '0xC8D6AB0928F9A8bAbB77B739401504f3354580cD';
 

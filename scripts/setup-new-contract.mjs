@@ -10,7 +10,7 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
 const PROXY = '0x9276f78c574b737d914704D9096777C1929ec1cB';
 const USDC_ADDR = '0x8B0180f2101c8260d49339abfEe87927412494B4';
 const RPC = 'https://polygon-amoy.g.alchemy.com/v2/YuiO_sWS_53rF2oOHjVL5OvrKvOxXWwO';
-const PRIVATE_KEY = process.env.PRIVATE_KEY_PROD || 'REDACTED_ROTATE_ME';
+const PRIVATE_KEY = process.env.PRIVATE_KEY_PROD;
 
 const ABI = [
   'function registerDomain(string name, string tld) returns (uint256)',
