@@ -1,0 +1,43 @@
+    function registerDomain(
+        string calldata name,
+        string calldata tld,
+        bool enableSubdomains,
+        string calldata metadataURI
+    ) external payable whenNotPaused nonReentrant returns (uint256 tokenId) {
+        AEDAppStorage storage $ = _getAEDStorage();
+        
+        // Validate domain
+        (bool valid, string memory reason) = $.validateDomainName(name, tld);
+        if (!valid) revert InvalidDomain(reason);
+        
+        // Calculate costs
+        (uint256 totalCost, ) = $.calculateDomainCost(name, tld, enableSubdomains);
+        if (msg.value < totalCost) revert InsufficientPayment(totalCost, msg.value);
+        
+        // Normalize name
+        string memory normalizedName = LibValidation.normalizeName(name);
+        string memory fullDomain = string(abi.encodePacked(normalizedName, ".", tld));
+        
+        // Create domain
+        tokenId = $.nextTokenId++;
+        uint256 features = enableSubdomains ? AEDConstants.FEATURE_SUBDOMAIN : 0;
+        
+        $.domains[tokenId] = Domain({
+            name: normalizedName,
+            tld: tld,
+            fullDomain: fullDomain,
+            owner: _msgSender(),
+            createdAt: block.timestamp,
+            expiresAt: 0, // No expiration
+            parentId: 0,
+            features: features,
+            isSubdomain: false,
+            metadataURI: metadataURI,
+            imageURI: ""
+        });
+        
+        // Update mappings
+        $.tokenIdToDomain[tokenId] = fullDomain;
+        $.domainToTokenId[fullDomain] = tokenId;
+        $.userDomains[_msgSender()].push(tokenId);
+        $.userDomainCount[_msgSender()]++;

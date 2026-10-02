@@ -1,0 +1,11 @@
+    ) internal view returns (uint256) {
+        AEDStorage.Domain storage parent = $.domains[parentId];
+        
+        // First 2 subdomains are free
+        if (parent.subdomains.length < 2) {
+            return 0;
+        }
+        
+        // Progressive pricing: 0.1 ETH for each subdomain beyond 2
+        uint256 baseCost = 0.1 ether;
+        uint256 multiplier = parent.subdomains.length - 1;

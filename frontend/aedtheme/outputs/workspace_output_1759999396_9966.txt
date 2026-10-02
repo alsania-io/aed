@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Orbitron:wght@600;700&family=Rajdhani:wght@400;500;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background: url('../img/bg.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #39FF14;
+}
+
+a {
+  color: #39FF14;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.header {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+}
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+.nav-link {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+}
+.wallet-btn {
+  background-color: #001f2e;
+  border: 2px solid #39FF14;
+  color: #39FF14;
+  padding: 10px 16px;
+  font-family: 'Rajdhani', sans-serif;
+  cursor: pointer;
+}
+
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+}
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 36px;
+  text-shadow: 0 0 8px #39FF14;
+}
+.hero-subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 24px;
+  margin-top: 10px;
+}
+.hero-description {
+  max-width: 600px;
+  margin: 20px auto;
+}
+.cta-buttons {
+  margin-top: 30px;
+}
+.cta-primary, .cta-secondary {
+  margin: 5px;
+  padding: 10px 20px;
+  border: 2px solid #39FF14;
+  border-radius: 6px;
+  background: #39FF14;
+  color: #001f2e;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: bold;
+}
+.cta-secondary {
+  background: transparent;
+  color: #39FF14;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 0 20px #39FF14;
+}
+h2 {
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  margin-bottom: 20px;

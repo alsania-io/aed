@@ -1,0 +1,11 @@
+    function registerDomain(
+        string calldata name,
+        string calldata tld,
+        bool enableSubdomains,
+        string calldata metadataURI
+    ) external payable whenNotPaused nonReentrant returns (uint256 tokenId) {
+        return _registerDomain(name, tld, enableSubdomains, metadataURI);
+    }
+
+    /// @dev Internal domain registration
+    function _registerDomain(

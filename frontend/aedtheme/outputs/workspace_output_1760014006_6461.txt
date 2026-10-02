@@ -1,0 +1,23 @@
+/workspace/aed-enhanced
+total 536
+drwxr-xr-x   9 root root   4096 Oct  9 12:29 .
+drwxr-xr-x   6 root root    138 Oct  9 12:43 ..
+-rw-r--r--   1 root root    516 Oct  9 08:12 .env.example
+-rw-r--r--   1 root root    517 Oct  9 08:13 .gitignore
+-rw-r--r--   1 root root  12342 Oct  9 08:12 AED_ENHANCED_PROJECT_REPORT.md
+-rw-r--r--   1 root root   5756 Oct  9 12:29 DEPLOYMENT_CHECKLIST.md
+-rw-r--r--   1 root root  24507 Oct  9 12:26 DEPLOYMENT_GUIDE.md
+-rw-r--r--   1 root root   9781 Oct  9 09:07 FRONTEND_SUMMARY.md
+-rw-r--r--   1 root root   8103 Oct  9 08:26 PROJECT_SUMMARY.md
+-rw-r--r--   1 root root   7736 Oct  9 08:11 README.md
+drwxr-xr-x   2 root root      6 Oct  9 08:23 cache
+drwxr-xr-x   9 root root   4096 Oct  9 08:23 contracts
+drwxr-xr-x   2 root root     28 Oct  9 08:15 docs
+drwxr-xr-x   5 root root    104 Oct  9 09:03 frontend
+-rw-r--r--   1 root root   3497 Oct  9 08:00 hardhat.config.js
+drwxr-xr-x 487 root root  16384 Oct  9 08:16 node_modules
+-rw-r--r--   1 root root 401780 Oct  9 08:16 package-lock.json
+-rw-r--r--   1 root root   2806 Oct  9 12:28 package.json
+drwxr-xr-x   2 root root     41 Oct  9 08:10 scripts
+drwxr-xr-x   2 root root     33 Oct  9 08:08 test
+-rw-r--r--   1 root root  19914 Oct  9 12:28 test-deployment.js

@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+import {AEDStorage} from "../storage/AEDStorage.sol";
+import {AEDConstants} from "../core/AEDConstants.sol";
+
+/**
+ * @title LibPricing
+ * @dev Library for managing domain pricing and calculations
+ */
+library LibPricing {
+    using AEDStorage for AEDStorage.AEDAppStorage;
+
+    /// @dev Calculates total cost for domain registration
+    function calculateDomainCost(

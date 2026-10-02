@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alsania Enhanced Domains - Web3 Domain Names</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Orbitron:wght@600;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/ah.css">
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+  <style>
+    
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="nav-container">
+      <a href="#" class="logo">Alsania Enhanced Domains</a>
+      <nav class="nav-menu">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#domains" class="nav-link">Domains</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+      <button class="wallet-btn" id="connectBtn">Connect Wallet</button>
+      <div class="wallet-status" id="wallet">Wallet: Not connected</div>
+      <div class="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1 class="hero-title glow-animation">The Future of Web3 Domains</h1>
+      <p class="hero-subtitle">Secure, Decentralized, Enhanced</p>
+      <p class="hero-description">
+        Join the next generation of internet identity with Alsania Enhanced Domains. 
+        Own your digital presence with blockchain-powered domain names that never expire and give you complete control.
+      </p>
+      <div class="cta-buttons">
+        <a href="#domains" class="cta-primary">Get Your Domain</a>
+        <a href="#features" class="cta-secondary">Learn More</a>
+      </div>
+    </div>

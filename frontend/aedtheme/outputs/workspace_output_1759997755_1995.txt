@@ -1,0 +1,16 @@
+
+> aed-enhanced-domains@2.0.0 prepare
+> husky install
+
+.git can't be found
+added 832 packages, and audited 833 packages in 20s
+
+165 packages are looking for funding
+  run `npm fund` for details
+
+5 low severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.

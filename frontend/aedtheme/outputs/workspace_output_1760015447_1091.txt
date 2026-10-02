@@ -1,0 +1,7 @@
+51:        mapping(string => uint256) domainToTokenId;
+64:        mapping(uint256 => Domain) domains;
+65:        mapping(string => uint256) domainToTokenId;
+66:        mapping(uint256 => string) tokenIdToDomain;
+68:        mapping(uint256 => uint256[]) subdomains;
+92:        mapping(uint256 => string[]) domainTags;
+93:        mapping(uint256 => bool) domainVerification;

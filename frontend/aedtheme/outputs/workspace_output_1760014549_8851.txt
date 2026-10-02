@@ -1,0 +1,6 @@
+27:            tldCost = tldConfig.price;
+68:        return pricing.price;
+77:        $.tldConfigs[tld].price = newPrice;
+88:        $.featurePricing[featureName].price = newPrice;
+167:            tldPrices[i] = $.tldConfigs[tld].price;
+179:        featurePrices[1] = $.featurePricing["metadata"].price;

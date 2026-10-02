@@ -1,0 +1,10 @@
+{
+  "network": "amoy",
+  "proxy": "0x9276f78c574b737d914704D9096777C1929ec1cB",
+  "implementation": "0xD6Fe7e8EBa6AeA4f49954bC4a14D0304Eacaf94B",
+  "usdc": "0x8B0180f2101c8260d49339abfEe87927412494B4",
+  "metadataBaseURI": "https://aed-metadata.vercel.app/api/",
+  "version": "2.0.0",
+  "timestamp": "2026-10-02T07:19:02.378Z",
+  "status": "active"
+}

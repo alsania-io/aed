@@ -1,0 +1,112 @@
+.
+├── LICENSE
+├── aed_metadata-j2xsflqm4-sigmasauer07s-projects_vercel_app_logs.csv
+├── assets
+│   └── aedbg
+│       ├── domain_background.png
+│       └── subdomain_background.png
+├── changelog.md
+├── codex-sync,js
+├── codex.todo.md
+├── contracts
+│   ├── AED.sol
+│   ├── AEDCoreImplementation.sol
+│   ├── AEDImplementation.sol
+│   ├── AEDImplementationLite.sol
+│   ├── AEDMinimal.sol
+│   ├── ModuleRegistry.sol
+│   ├── ProxyRouter.sol
+│   ├── core
+│   │   ├── AEDConstants.sol
+│   │   ├── AEDCore.sol
+│   │   ├── AppStorage.sol
+│   │   └── interfaces
+│   ├── interfaces
+│   │   ├── external
+│   │   └── modules
+│   ├── libraries
+│   │   ├── AEDEvents.sol
+│   │   ├── LibAdmin.sol
+│   │   ├── LibAppStorage.sol
+│   │   ├── LibBridge.sol
+│   │   ├── LibDomainEnhancements.sol
+│   │   ├── LibEnhancements.sol
+│   │   ├── LibMetadata.sol
+│   │   ├── LibMinting.sol
+│   │   ├── LibModule.sol
+│   │   ├── LibModuleRegistry.sol
+│   │   ├── LibRecovery.sol
+│   │   ├── LibRegistry.sol
+│   │   ├── LibReverse.sol
+│   │   ├── LibRoles.sol
+│   │   └── LibValidation.sol
+│   └── modules
+│       ├── admin
+│       ├── base
+│       ├── bridge
+│       ├── enhancements
+│       ├── future
+│       ├── metadata
+│       ├── minting
+│       ├── recovery
+│       ├── registry
+│       └── reverse
+├── docs
+│   ├── AED-MVP-Feature-Checklist.md
+│   ├── AED-Production-Readiness-Checklist.md
+│   ├── aed_TREE_20251002_143318.txt
+│   ├── docs_management.md
+│   └── rules.md
+├── frontend
+│   ├── aed-admin
+│   │   ├── component-loader.js
+│   │   ├── components
+│   │   ├── css
+│   │   ├── img
+│   │   ├── index.html
+│   │   └── js
+│   └── aed-home
+│       ├── component-loader.js
+│       ├── components
+│       ├── css
+│       ├── img
+│       ├── index.html
+│       └── js
+├── hardhat.config.js
+├── legal
+│   ├── Cookie-Policy.md
+│   ├── Legal-Implementation-Guide.md
+│   ├── Privacy-Policy.md
+│   └── Terms-of-Service.md
+├── metadata-server
+│   ├── README.md
+│   ├── metadata-server.js
+│   ├── package-lock.json
+│   ├── package.json
+│   └── vercel.json
+├── package-lock.json
+├── package.json
+├── scripts
+│   ├── check-balance.js
+│   ├── check-contract-functions.js
+│   ├── check-metadata.js
+│   ├── checkState.js
+│   ├── debug-proxy.js
+│   ├── debug-storage.js
+│   ├── debug-tokenuri.js
+│   ├── deploy.js
+│   ├── generate-abi.js
+│   ├── generate-metadata-json.js
+│   ├── mint-domains.js
+│   ├── mint-full-matrix.js
+│   ├── mintTest.js
+│   ├── syncABI.js
+│   ├── upgrade-implementation.js
+│   ├── utils.js
+│   └── verify.js
+└── test
+    ├── AED.test.js
+    ├── AEDCoreTest.sol
+    └── deployment.test.js
+
+37 directories, 73 files

@@ -1,0 +1,4 @@
+5:import {AEDConstants} from "../core/AEDConstants.sol";
+66:        require(pricing.active, AEDConstants.ERROR_INVALID_FEATURE);
+79:        emit AEDConstants.FeeUpdated("tld", $.tldConfigs[tld].price, newPrice);
+90:        emit AEDConstants.FeeUpdated(featureName, $.featurePricing[featureName].price, newPrice);

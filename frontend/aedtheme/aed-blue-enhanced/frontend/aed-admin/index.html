@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AED Admin Dashboard - Control Center</title>
+    <meta name="description" content="Administrative control center for Alsania Enhanced Domains">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../shared/glass-ui.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Web3 -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="admin-body">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="logo-icon">Æ</div>
+                <div class="logo-text">ADMIN</div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">Initializing Control Center...</div>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="particle-field"></div>
+        <div class="grid-overlay"></div>
+        <div class="scanline"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="glass-nav admin-header">
+        <div class="glass-container">
+            <div class="nav-content">
+                <div class="nav-brand-section">
+                    <div class="brand-icon">Æ</div>
+                    <div class="brand-info">
+                        <div class="brand-title">AED ADMIN</div>
+                        <div class="brand-subtitle">Control Center</div>
+                    </div>
+                </div>
+                
+                <div class="nav-status-section">
+                    <div class="network-status glass-panel">
+                        <div class="status-indicator" id="networkStatus"></div>
+                        <span id="networkName">Network: Disconnected</span>
+                    </div>
+                    <div class="contract-status glass-panel">
+                        <div class="status-indicator" id="contractStatus"></div>
+                        <span id="contractStatusText">Contract: Not Deployed</span>
+                    </div>
+                </div>
+                
+                <div class="nav-wallet-section">
+                    <div class="wallet-status glass-panel" id="walletStatus">
+                        <div class="status-indicator" id="walletStatusIndicator"></div>
+                        <span id="walletAddress">Connect Wallet</span>
+                    </div>
+                    <button class="glass-button connect-btn" id="connectBtn">
+                        <i class="fas fa-plug"></i> Connect
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Navigation Tabs -->
+        <nav class="admin-tabs glass-panel">
+            <div class="tabs-container">
+                <button class="tab-button active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="tab-button" data-tab="domains">
+                    <i class="fas fa-globe"></i>
+                    <span>Domain Management</span>
+                </button>
+                <button class="tab-button" data-tab="users">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </button>
+                <button class="tab-button" data-tab="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </button>
+                <button class="tab-button" data-tab="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </button>
+                <button class="tab-button" data-tab="emergency">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Emergency</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <section id="dashboard" class="tab-content active">
+            <div class="admin-container">
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="totalDomains">0</div>
+                            <div class="metric-label">Total Domains</div>
+                            <div class="metric-change positive" id="domainsChange">+0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="totalRevenue">0</div>
+                            <div class="metric-label">Total Revenue (MATIC)</div>
+                            <div class="metric-change positive" id="revenueChange">+0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="activeUsers">0</div>
+                            <div class="metric-label">Active Users</div>
+                            <div class="metric-change positive" id="usersChange">+0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="avgDomainValue">0</div>
+                            <div class="metric-label">Avg Domain Value</div>
+                            <div class="metric-change neutral" id="valueChange">+0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions glass-panel">
+                    <h3 class="panel-title">
+                        <i class="fas fa-bolt"></i> Quick Actions
+                    </h3>
+                    <div class="action-buttons">
+                        <button class="glass-button action-btn" id="pauseContractBtn">
+                            <i class="fas fa-pause"></i> Pause Contract
+                        </button>
+                        <button class="glass-button action-btn" id="emergencyWithdrawBtn">
+                            <i class="fas fa-exclamation-triangle"></i> Emergency Withdraw
+                        </button>
+                        <button class="glass-button action-btn" id="updatePricingBtn">
+                            <i class="fas fa-tags"></i> Update Pricing
+                        </button>
+                        <button class="glass-button action-btn" id="addTLDBtn">
+                            <i class="fas fa-plus"></i> Add TLD
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-container glass-panel">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Domain Registration Trends</h3>
+                            <div class="chart-controls">
+                                <select class="glass-input chart-period" id="domainTrendsPeriod">
+                                    <option value="7d">7 Days</option>
+                                    <option value="30d">30 Days</option>
+                                    <option value="90d">90 Days</option>
+                                    <option value="1y">1 Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="domainTrendsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container glass-panel">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue Distribution</h3>
+                            <div class="chart-controls">
+                                <select class="glass-input chart-period" id="revenueDistributionPeriod">
+                                    <option value="7d">7 Days</option>
+                                    <option value="30d">30 Days</option>
+                                    <option value="90d">90 Days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="revenueDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-panel glass-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-history"></i> Recent Activity
+                        </h3>
+                        <button class="glass-button" id="refreshActivityBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-list" id="activityList">
+                            <!-- Activity items will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Domain Management Tab -->
+        <section id="domains" class="tab-content">
+            <div class="admin-container">
+                <div class="domains-header">
+                    <h2 class="section-title">Domain Management</h2>
+                    <div class="header-actions">
+                        <button class="glass-button" id="refreshDomainsBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="glass-button cta-primary" id="addDomainBtn">
+                            <i class="fas fa-plus"></i> Add Domain
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Domain Filters -->
+                <div class="filters-panel glass-panel">
+                    <div class="filter-group">
+                        <label class="filter-label">Search</label>
+                        <input type="text" class="glass-input" id="domainSearch" placeholder="Search domains...">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">TLD</label>
+                        <select class="glass-input" id="domainTLDFilter">
+                            <option value="">All TLDs</option>
+                            <option value="aed">.aed</option>
+                            <option value="alsa">.alsa</option>
+                            <option value="07">.07</option>
+                            <option value="alsania">.alsania</option>
+                            <option value="fx">.fx</option>
+                            <option value="echo">.echo</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status</label>
+                        <select class="glass-input" id="domainStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="expired">Expired</option>
+                            <option value="transferred">Transferred</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select class="glass-input" id="domainSortFilter">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="name">Name (A-Z)</option>
+                            <option value="value">Value (High-Low)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Domains Grid -->
+                <div class="domains-grid" id="domainsGrid">
+                    <!-- Domain cards will be populated dynamically -->
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-panel glass-panel">
+                    <div class="pagination-info">
+                        <span>Showing <span id="currentPageInfo">1-10</span> of <span id="totalDomainsInfo">0</span> domains</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="glass-button" id="prevPageBtn" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <span class="page-info">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                        <button class="glass-button" id="nextPageBtn" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Management Tab -->
+        <section id="users" class="tab-content">
+            <div class="admin-container">
+                <div class="users-header">
+                    <h2 class="section-title">User Management</h2>
+                    <div class="header-actions">
+                        <button class="glass-button" id="refreshUsersBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="glass-button cta-primary" id="addUserBtn">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+                    </div>
+                </div>
+
+                <!-- User Filters -->
+                <div class="filters-panel glass-panel">
+                    <div class="filter-group">
+                        <label class="filter-label">Search</label>
+                        <input type="text" class="glass-input" id="userSearch" placeholder="Search users...">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Role</label>
+                        <select class="glass-input" id="userRoleFilter">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status</label>
+                        <select class="glass-input" id="userStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="suspended">Suspended</option>
+                            <option value="banned">Banned</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="users-table-container glass-panel">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Address</th>
+                                <th>Domain Count</th>
+                                <th>Total Spent</th>
+                                <th>Registration Date</th>
+                                <th>Last Activity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- User rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Tab -->
+        <section id="analytics" class="tab-content">
+            <div class="admin-container">
+                <div class="analytics-header">
+                    <h2 class="section-title">Analytics Dashboard</h2>
+                    <div class="header-actions">
+                        <select class="glass-input" id="analyticsPeriod">
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                            <option value="1y">Last Year</option>
+                        </select>
+                        <button class="glass-button" id="exportAnalyticsBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Grid -->
+                <div class="analytics-grid">
+                    <div class="analytics-card glass-panel">
+                        <h3 class="card-title">Registration Trends</h3>
+                        <canvas id="registrationTrendsChart"></canvas>
+                    </div>
+                    
+                    <div class="analytics-card glass-panel">
+                        <h3 class="card-title">TLD Performance</h3>
+                        <canvas id="tldPerformanceChart"></canvas>
+                    </div>
+                    
+                    <div class="analytics-card glass-panel">
+                        <h3 class="card-title">User Activity</h3>
+                        <canvas id="userActivityChart"></canvas>
+                    </div>
+                    
+                    <div class="analytics-card glass-panel">
+                        <h3 class="card-title">Revenue Analysis</h3>
+                        <canvas id="revenueAnalysisChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="settings" class="tab-content">
+            <div class="admin-container">
+                <div class="settings-header">
+                    <h2 class="section-title">System Settings</h2>
+                    <button class="glass-button cta-primary" id="saveSettingsBtn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+
+                <div class="settings-grid">
+                    <!-- Contract Settings -->
+                    <div class="settings-section glass-panel">
+                        <h3 class="section-subtitle">Contract Settings</h3>
+                        <div class="setting-group">
+                            <label class="setting-label">Contract Address</label>
+                            <input type="text" class="glass-input" id="contractAddress" readonly>
+                            <button class="glass-button secondary" id="updateContractBtn">Update</button>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Fee Collector Address</label>
+                            <input type="text" class="glass-input" id="feeCollectorAddress">
+                            <button class="glass-button secondary" id="updateFeeCollectorBtn">Update</button>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Default TLD Price (MATIC)</label>
+                            <input type="number" class="glass-input" id="defaultTLDPrice" step="0.1">
+                            <button class="glass-button secondary" id="updateDefaultPriceBtn">Update</button>
+                        </div>
+                    </div>
+
+                    <!-- Feature Settings -->
+                    <div class="settings-section glass-panel">
+                        <h3 class="section-subtitle">Feature Settings</h3>
+                        <div class="setting-group">
+                            <label class="setting-label">Subdomain Feature Price (MATIC)</label>
+                            <input type="number" class="glass-input" id="subdomainFeaturePrice" step="0.1">
+                            <button class="glass-button secondary" id="updateSubdomainPriceBtn">Update</button>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Metadata Feature Price (MATIC)</label>
+                            <input type="number" class="glass-input" id="metadataFeaturePrice" step="0.1">
+                            <button class="glass-button secondary" id="updateMetadataPriceBtn">Update</button>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Reverse Resolution Price (MATIC)</label>
+                            <input type="number" class="glass-input" id="reverseResolutionPrice" step="0.1">
+                            <button class="glass-button secondary" id="updateReversePriceBtn">Update</button>
+                        </div>
+                    </div>
+
+                    <!-- System Settings -->
+                    <div class="settings-section glass-panel">
+                        <h3 class="section-subtitle">System Settings</h3>
+                        <div class="setting-group">
+                            <label class="setting-label">Max Domain Length</label>
+                            <input type="number" class="glass-input" id="maxDomainLength">
+                            <button class="glass-button secondary" id="updateMaxLengthBtn">Update</button>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Max Subdomains per Domain</label>
+                            <input type="number" class="glass-input" id="maxSubdomains">
+                            <button class="glass-button secondary" id="updateMaxSubdomainsBtn">Update</button>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Free Subdomains per Domain</label>
+                            <input type="number" class="glass-input" id="freeSubdomains">
+                            <button class="glass-button secondary" id="updateFreeSubdomainsBtn">Update</button>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="settings-section glass-panel">
+                        <h3 class="section-subtitle">Security Settings</h3>
+                        <div class="setting-group">
+                            <label class="setting-checkbox">
+                                <input type="checkbox" id="enablePause">
+                                <span class="checkmark"></span>
+                                Enable Emergency Pause
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-checkbox">
+                                <input type="checkbox" id="enableUpgrade">
+                                <span class="checkmark"></span>
+                                Enable Contract Upgrades
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-checkbox">
+                                <input type="checkbox" id="enableWhitelist">
+                                <span class="checkmark"></span>
+                                Enable Whitelist
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emergency Tab -->
+        <section id="emergency" class="tab-content">
+            <div class="admin-container">
+                <div class="emergency-header">
+                    <h2 class="section-title emergency-title">
+                        <i class="fas fa-exclamation-triangle"></i> Emergency Controls
+                    </h2>
+                    <div class="emergency-status">
+                        <div class="status-glass status-warning">
+                            <i class="fas fa-circle"></i> System Operational
+                        </div>
+                    </div>
+                </div>
+
+                <div class="emergency-grid">
+                    <!-- Emergency Actions -->
+                    <div class="emergency-section glass-panel critical">
+                        <h3 class="section-subtitle critical">
+                            <i class="fas fa-stop-circle"></i> Emergency Stop
+                        </h3>
+                        <p class="emergency-description">
+                            Immediately pause all contract functions. This will prevent any new domain registrations, transfers, or other operations.
+                        </p>
+                        <button class="glass-button emergency-btn critical" id="emergencyPauseBtn">
+                            <i class="fas fa-pause"></i> EMERGENCY PAUSE
+                        </button>
+                    </div>
+
+                    <div class="emergency-section glass-panel warning">
+                        <h3 class="section-subtitle warning">
+                            <i class="fas fa-money-bill-wave"></i> Emergency Withdraw
+                        </h3>
+                        <p class="emergency-description">
+                            Withdraw all funds from the contract to the emergency wallet. Use only in critical situations.
+                        </p>
+                        <div class="emergency-input-group">
+                            <input type="number" class="glass-input" id="emergencyWithdrawAmount" placeholder="Amount to withdraw">
+                            <input type="text" class="glass-input" id="emergencyWithdrawAddress" placeholder="Emergency wallet address">
+                        </div>
+                        <button class="glass-button emergency-btn warning" id="emergencyWithdrawBtn">
+                            <i class="fas fa-exclamation-triangle"></i> EMERGENCY WITHDRAW
+                        </button>
+                    </div>
+
+                    <div class="emergency-section glass-panel info">
+                        <h3 class="section-subtitle info">
+                            <i class="fas fa-user-shield"></i> Admin Transfer
+                        </h3>
+                        <p class="emergency-description">
+                            Transfer admin rights to another address. This action cannot be undone without the new admin's consent.
+                        </p>
+                        <input type="text" class="glass-input" id="newAdminAddress" placeholder="New admin address">
+                        <button class="glass-button emergency-btn info" id="transferAdminBtn">
+                            <i class="fas fa-user-plus"></i> TRANSFER ADMIN RIGHTS
+                        </button>
+                    </div>
+
+                    <div class="emergency-section glass-panel success">
+                        <h3 class="section-subtitle success">
+                            <i class="fas fa-play-circle"></i> Resume Operations
+                        </h3>
+                        <p class="emergency-description">
+                            Resume normal contract operations after an emergency pause. Ensure all issues have been resolved before resuming.
+                        </p>
+                        <button class="glass-button emergency-btn success" id="resumeOperationsBtn">
+                            <i class="fas fa-play"></i> RESUME OPERATIONS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Emergency Log -->
+                <div class="emergency-log glass-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-history"></i> Emergency Log
+                        </h3>
+                        <button class="glass-button" id="clearEmergencyLogBtn">
+                            <i class="fas fa-trash"></i> Clear Log
+                        </button>
+                    </div>
+                    <div class="log-content" id="emergencyLog">
+                        <!-- Emergency log entries will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Modal Title</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../shared/glass-ui.js"></script>
+    <script src="js/web3-provider.js"></script>
+    <script src="js/contract-interface.js"></script>
+    <script src="js/admin-manager.js"></script>
+    <script src="js/analytics-manager.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alsania Enhanced Domains - Web3 Domain Names</title>
+    <meta name="description" content="The future of Web3 domains - Secure, decentralized, and enhanced domain names on the blockchain">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../shared/glass-ui.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Web3 -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="logo-icon">Æ</div>
+                <div class="logo-text">ALSANIA</div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">Initializing Web3 Connection...</div>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="particle-field"></div>
+        <div class="grid-overlay"></div>
+        <div class="scanline"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav" id="mainNav">
+        <div class="glass-container">
+            <div class="nav-content">
+                <a href="#" class="glass-nav-brand">
+                    <div class="brand-icon">Æ</div>
+                    <span>ALSANIA</span>
+                </a>
+                
+                <div class="glass-nav-menu" id="navMenu">
+                    <a href="#home" class="glass-nav-link active" data-section="home">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="#domains" class="glass-nav-link" data-section="domains">
+                        <i class="fas fa-globe"></i> Domains
+                    </a>
+                    <a href="#features" class="glass-nav-link" data-section="features">
+                        <i class="fas fa-star"></i> Features
+                    </a>
+                    <a href="#pricing" class="glass-nav-link" data-section="pricing">
+                        <i class="fas fa-tags"></i> Pricing
+                    </a>
+                    <a href="#portfolio" class="glass-nav-link" data-section="portfolio">
+                        <i class="fas fa-wallet"></i> Portfolio
+                    </a>
+                </div>
+                
+                <div class="nav-actions">
+                    <div class="wallet-status glass-panel" id="walletStatus">
+                        <div class="status-indicator" id="statusIndicator"></div>
+                        <span id="walletAddress">Connect Wallet</span>
+                    </div>
+                    <button class="glass-button connect-btn" id="connectBtn">
+                        <i class="fas fa-plug"></i> Connect
+                    </button>
+                </div>
+                
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="glass-container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title glow-text">
+                            The Future of
+                            <span class="gradient-text">Web3 Domains</span>
+                        </h1>
+                        <p class="hero-subtitle">Secure • Decentralized • Enhanced</p>
+                        <p class="hero-description">
+                            Own your digital identity with blockchain-powered domain names that never expire. 
+                            Experience the next generation of internet addressing with advanced features, 
+                            subdomain capabilities, and complete decentralization.
+                        </p>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <div class="stat-number" id="totalDomains">0</div>
+                                <div class="stat-label">Domains Registered</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="totalRevenue">0</div>
+                                <div class="stat-label">MATIC Generated</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="activeTLDs">6</div>
+                                <div class="stat-label">Available TLDs</div>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="glass-button cta-primary" id="getStartedBtn">
+                                <i class="fas fa-rocket"></i> Get Started
+                            </button>
+                            <button class="glass-button cta-secondary" id="learnMoreBtn">
+                                <i class="fas fa-info-circle"></i> Learn More
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="domain-showcase">
+                            <div class="showcase-header">
+                                <span class="showcase-title">Live Domain Search</span>
+                                <div class="status-glass status-active">
+                                    <i class="fas fa-circle"></i> System Online
+                                </div>
+                            </div>
+                            <div class="search-demo">
+                                <input type="text" class="glass-input search-input" 
+                                       placeholder="Enter your desired domain..." 
+                                       id="heroSearchInput">
+                                <div class="tld-selector">
+                                    <select class="glass-input" id="heroTLDSelect">
+                                        <option value="aed">.aed</option>
+                                        <option value="alsa">.alsa</option>
+                                        <option value="07">.07</option>
+                                        <option value="alsania">.alsania</option>
+                                        <option value="fx">.fx</option>
+                                        <option value="echo">.echo</option>
+                                    </select>
+                                </div>
+                                <button class="glass-button search-btn" id="heroSearchBtn">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                            <div class="search-results" id="heroSearchResults">
+                                <div class="result-item placeholder">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Start typing to search for available domains</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Domain Registration Section -->
+        <section id="domains" class="domains-section">
+            <div class="glass-container">
+                <div class="section-header">
+                    <h2 class="title-secondary">Domain Registration</h2>
+                    <p class="text-body">Secure your digital identity with our enhanced domain system</p>
+                </div>
+                
+                <div class="registration-panel glass-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-plus-circle"></i> Register New Domain
+                        </h3>
+                        <div class="panel-actions">
+                            <button class="glass-button" id="refreshTLDsBtn">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="registration-form">
+                        <div class="form-group">
+                            <label class="form-label">Domain Name</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="glass-input" 
+                                       id="domainNameInput" 
+                                       placeholder="your-domain-name"
+                                       maxlength="63">
+                                <div class="input-validation">
+                                    <span class="validation-icon" id="nameValidationIcon"></span>
+                                    <span class="validation-text" id="nameValidationText"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Top Level Domain</label>
+                            <div class="tld-grid" id="tldGrid">
+                                <!-- TLD options will be populated dynamically -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Features</label>
+                            <div class="features-grid">
+                                <label class="feature-option">
+                                    <input type="checkbox" id="subdomainFeature">
+                                    <span class="checkmark"></span>
+                                    <div class="feature-info">
+                                        <span class="feature-name">Subdomain Support</span>
+                                        <span class="feature-price" id="subdomainPrice">+ 2.0 MATIC</span>
+                                    </div>
+                                </label>
+                                <label class="feature-option">
+                                    <input type="checkbox" id="metadataFeature">
+                                    <span class="checkmark"></span>
+                                    <div class="feature-info">
+                                        <span class="feature-name">Enhanced Metadata</span>
+                                        <span class="feature-price">+ 0.5 MATIC</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Metadata URI (Optional)</label>
+                            <input type="url" 
+                                   class="glass-input" 
+                                   id="metadataURIInput" 
+                                   placeholder="https://your-metadata.json">
+                        </div>
+                        
+                        <div class="cost-breakdown glass-panel">
+                            <h4 class="breakdown-title">Cost Breakdown</h4>
+                            <div class="breakdown-items" id="costBreakdown">
+                                <div class="breakdown-item">
+                                    <span>Domain Registration</span>
+                                    <span id="baseCost">0.0 MATIC</span>
+                                </div>
+                            </div>
+                            <div class="breakdown-total">
+                                <span>Total Cost</span>
+                                <span id="totalCost">0.0 MATIC</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="glass-button cta-primary" id="registerDomainBtn" disabled>
+                                <i class="fas fa-check-circle"></i> Register Domain
+                            </button>
+                            <button class="glass-button secondary" id="resetFormBtn">
+                                <i class="fas fa-redo"></i> Reset Form
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batch Registration -->
+                <div class="batch-registration glass-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-layer-group"></i> Batch Registration
+                        </h3>
+                        <div class="batch-controls">
+                            <button class="glass-button" id="addDomainRowBtn">
+                                <i class="fas fa-plus"></i> Add Domain
+                            </button>
+                            <button class="glass-button" id="clearBatchBtn">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="batch-domains" id="batchDomains">
+                        <!-- Dynamic domain rows will be added here -->
+                    </div>
+                    
+                    <div class="batch-summary glass-panel">
+                        <h4 class="summary-title">Batch Summary</h4>
+                        <div class="summary-stats">
+                            <div class="stat">
+                                <span class="stat-label">Total Domains:</span>
+                                <span class="stat-value" id="batchCount">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Total Cost:</span>
+                                <span class="stat-value" id="batchTotalCost">0.0 MATIC</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Est. Gas:</span>
+                                <span class="stat-value" id="batchGasCost">~0.0 MATIC</span>
+                            </div>
+                        </div>
+                        <button class="glass-button cta-primary" id="registerBatchBtn" disabled>
+                            <i class="fas fa-layer-group"></i> Register Batch
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="portfolio-section">
+            <div class="glass-container">
+                <div class="section-header">
+                    <h2 class="title-secondary">Your Domain Portfolio</h2>
+                    <p class="text-body">Manage your registered domains and subdomains</p>
+                </div>
+                
+                <div class="portfolio-controls glass-panel">
+                    <div class="controls-left">
+                        <input type="text" 
+                               class="glass-input" 
+                               id="portfolioSearch" 
+                               placeholder="Search domains...">
+                        <select class="glass-input" id="portfolioFilter">
+                            <option value="all">All Domains</option>
+                            <option value="domains">Top-level Domains</option>
+                            <option value="subdomains">Subdomains</option>
+                            <option value="forsale">For Sale</option>
+                        </select>
+                    </div>
+                    <div class="controls-right">
+                        <button class="glass-button" id="refreshPortfolioBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="glass-button" id="exportPortfolioBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="portfolio-grid" id="portfolioGrid">
+                    <!-- Domain cards will be populated dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-globe-americas"></i>
+                        <h3>No domains found</h3>
+                        <p>Register your first domain to get started</p>
+                        <button class="glass-button cta-primary" onclick="scrollToSection('domains')">
+                            Register Domain
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="glass-container">
+                <div class="section-header">
+                    <h2 class="title-secondary">Enhanced Features</h2>
+                    <p class="text-body">Discover what makes our domains truly enhanced</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <h3 class="feature-title">Never Expire</h3>
+                        <p class="feature-description">Your domain is yours forever. No renewal fees, no expiration dates.</p>
+                    </div>
+                    
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <h3 class="feature-title">Subdomain Support</h3>
+                        <p class="feature-description">Create unlimited subdomains and build your digital ecosystem.</p>
+                    </div>
+                    
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <h3 class="feature-title">Rich Metadata</h3>
+                        <p class="feature-description">Custom images, descriptions, and attributes for your domains.</p>
+                    </div>
+                    
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Reverse Resolution</h3>
+                        <p class="feature-description">Map your address to a human-readable domain name.</p>
+                    </div>
+                    
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3 class="feature-title">Batch Operations</h3>
+                        <p class="feature-description">Register multiple domains efficiently in one transaction.</p>
+                    </div>
+                    
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title">Analytics</h3>
+                        <p class="feature-description">Track your domain performance and portfolio value.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section">
+            <div class="glass-container">
+                <div class="section-header">
+                    <h2 class="title-secondary">Transparent Pricing</h2>
+                    <p class="text-body">Simple, fair pricing with no hidden fees</p>
+                </div>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card glass-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Free TLDs</h3>
+                            <div class="pricing-price">0 MATIC</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> .aed</li>
+                            <li><i class="fas fa-check"></i> .alsa</li>
+                            <li><i class="fas fa-check"></i> .07</li>
+                            <li><i class="fas fa-check"></i> Basic metadata</li>
+                        </ul>
+                        <button class="glass-button cta-primary">Get Started</button>
+                    </div>
+                    
+                    <div class="pricing-card glass-card featured">
+                        <div class="pricing-badge">Popular</div>
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Premium TLDs</h3>
+                            <div class="pricing-price">1 MATIC</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> .alsania</li>
+                            <li><i class="fas fa-check"></i> .fx</li>
+                            <li><i class="fas fa-check"></i> .echo</li>
+                            <li><i class="fas fa-check"></i> Enhanced metadata</li>
+                        </ul>
+                        <button class="glass-button cta-primary">Choose Premium</button>
+                    </div>
+                    
+                    <div class="pricing-card glass-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Features</h3>
+                            <div class="pricing-price">+2 MATIC</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> Subdomain support</li>
+                            <li><i class="fas fa-check"></i> Custom metadata</li>
+                            <li><i class="fas fa-check"></i> Reverse resolution</li>
+                            <li><i class="fas fa-check"></i> Batch discounts</li>
+                        </ul>
+                        <button class="glass-button cta-primary">Add Features</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-footer">
+        <div class="glass-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-icon">Æ</div>
+                    <span>ALSANIA</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#home" class="footer-link">Home</a>
+                    <a href="#domains" class="footer-link">Domains</a>
+                    <a href="#features" class="footer-link">Features</a>
+                    <a href="#pricing" class="footer-link">Pricing</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Alsania Enhanced Domains. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Modal Title</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/glass-ui.js"></script>
+    <script src="js/web3-provider.js"></script>
+    <script src="js/contract-interface.js"></script>
+    <script src="js/domain-manager.js"></script>
+    <script src="js/portfolio-manager.js"></script>
+    <script src="js/search-interface.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

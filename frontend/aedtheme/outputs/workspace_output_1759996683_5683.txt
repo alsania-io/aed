@@ -1,0 +1,20 @@
+./.github/alsania-rules/AGENTS.md
+./.github/alsania-rules/alsania-rules.md
+./.github/alsania-rules/alsania_copilot_protocol.md
+./.github/prompts/compare.md
+./.github/prompts/docem.md
+./.github/prompts/fix issues.md
+./.github/prompts/prompt.md
+./.github/prompts/rebrand.md
+./.github/prompts/setup.md
+./.github/prompts/summary.md
+./.kilocode/mcp.json
+./.prettierrc.json
+./.zencoder/rules/repo.md
+./changelog.md
+./codex.todo.md
+./contracts/AED.sol
+./contracts/AEDCoreImplementation.sol
+./contracts/AEDImplementation.sol
+./contracts/AEDImplementationLite.sol
+./contracts/AEDMinimal.sol

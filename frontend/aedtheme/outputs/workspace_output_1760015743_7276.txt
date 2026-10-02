@@ -1,0 +1,2 @@
+79:        mapping(address => string) reverseRecords;
+80:        mapping(string => address) reverseOwners;

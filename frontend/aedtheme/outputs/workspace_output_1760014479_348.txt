@@ -1,0 +1,11 @@
+        if (!_isValidDomainName(label)) {
+            return (false, "Invalid characters in subdomain");
+        }
+
+        // Check subdomain limit
+        if (parent.subdomains.length >= 1000) {
+            return (false, "Maximum subdomains reached");
+        }
+
+        return (true, "");
+    }

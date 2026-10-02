@@ -1,0 +1,4 @@
+125:    function registerDomain(
+131:        return _registerDomain(name, tld, enableSubdomains, metadataURI);
+135:    function _registerDomain(
+230:            tokenIds[i] = _registerDomain(

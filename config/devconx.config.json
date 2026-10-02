@@ -1,0 +1,58 @@
+{
+  "adapters": [
+    {
+      "id": "chatgpt-web",
+      "displayName": "ChatGPT Web",
+      "provider": "OpenAI",
+      "baseUrl": "https://chatgpt.com",
+      "completionEndpoint": "https://chatgpt.com/",
+      "capabilities": [
+        "chat",
+        "web-based"
+      ],
+      "timeoutMs": 60000
+    },
+    {
+      "id": "claude-web",
+      "displayName": "Claude Web",
+      "provider": "Anthropic",
+      "baseUrl": "https://claude.ai",
+      "completionEndpoint": "https://claude.ai/chat",
+      "capabilities": [
+        "chat",
+        "web-based"
+      ],
+      "timeoutMs": 60000
+    },
+    {
+      "id": "deepseek-web",
+      "displayName": "DeepSeek Chat",
+      "provider": "DeepSeek",
+      "baseUrl": "https://chat.deepseek.com",
+      "completionEndpoint": "https://chat.deepseek.com/",
+      "capabilities": [
+        "chat",
+        "web-based"
+      ],
+      "timeoutMs": 60000
+    },
+    {
+      "id": "echo-bridge",
+      "displayName": "Echo Cloud Adapter (Python Backend)",
+      "provider": "Alsania",
+      "baseUrl": "http://127.0.0.1:5175",
+      "completionEndpoint": "/api/echo/chat",
+      "capabilities": [
+        "chat",
+        "mcp"
+      ],
+      "timeoutMs": 60000
+    }
+  ],
+  "proxy": {
+    "port": 4800,
+    "host": "127.0.0.1",
+    "heartbeatIntervalMs": 5000,
+    "shutdownGracePeriodMs": 2000
+  }
+}

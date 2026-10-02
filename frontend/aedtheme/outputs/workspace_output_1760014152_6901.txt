@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+/**
+ * @title AED Storage Layout
+ * @dev Defines the storage layout for the AED system using EIP-1967 pattern
+ */
+contract AEDStorage {
+    /// @dev Storage position for the AED app storage
+    bytes32 private constant AED_STORAGE_POSITION = 
+        keccak256("aed.enhanced.domains.storage.v2");
+
+    /// @dev Storage position for the AED implementation storage
+    bytes32 private constant AED_IMPLEMENTATION_POSITION = 
+        keccak256("aed.enhanced.domains.implementation.v2");
+
+    /// @dev Domain structure
+    struct Domain {
+        string name;
+        string tld;

@@ -1,0 +1,9 @@
+total 20
+drwxr-xr-x 6 root root  129 Oct  9 07:57 .
+drwxr-xr-x 4 root root   51 Oct  9 07:57 ..
+-rw-r--r-- 1 root root 7293 Oct  9 07:57 component-loader.js
+drwxr-xr-x 2 root root   82 Oct  9 07:57 components
+drwxr-xr-x 2 root root   95 Oct  9 07:57 css
+drwxr-xr-x 2 root root   51 Oct  9 07:57 img
+-rw-r--r-- 1 root root 8475 Oct  9 07:57 index.html
+drwxr-xr-x 2 root root   93 Oct  9 07:57 js

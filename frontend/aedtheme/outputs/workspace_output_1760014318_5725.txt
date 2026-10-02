@@ -1,0 +1,11 @@
+ */
+library LibPricing {
+    // Note: Direct struct access - no using statement needed
+
+    /// @dev Calculates total cost for domain registration
+    function calculateDomainCost(
+        AEDStorage.AEDAppStorage storage $,
+        string memory name,
+        string memory tld,
+        bool enableSubdomains
+    ) internal view returns (uint256 totalCost, uint256 breakdown) {

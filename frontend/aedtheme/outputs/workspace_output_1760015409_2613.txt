@@ -1,0 +1,20 @@
+🚀 Starting Comprehensive AED Enhanced Test Suite
+📋 Accounts loaded:
+   Owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+   User1: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+   User2: 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+   FeeCollector: 0x90F79bf6EB2c4f870365E785982E1f101E93b906
+
+📦 Loading contract factory...
+🚀 Deploying proxy...
+✅ AED Enhanced deployed to: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+
+🔍 Testing basic contract functions...
+   Name: Alsania Enhanced Domains
+   Symbol: AED
+
+🔐 Testing role management...
+   Owner has ADMIN_ROLE: true
+
+📝 Testing domain registration...
+   ✅ Domain 'mydomain.eth' registered

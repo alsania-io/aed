@@ -1,0 +1,28 @@
+🔍 Verifying AED Enhanced Deployment...
+✅ Accounts loaded
+🚀 Deploying contract...
+✅ Contract deployed to: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+🔍 Verifying basic functions...
+   Name: Alsania Enhanced Domains
+   Symbol: AED
+🔍 Checking TLDs...
+   aed: ✅ Active
+   alsa: ✅ Active
+   07: ✅ Active
+   alsania: ✅ Active
+   fx: ✅ Active
+   echo: ✅ Active
+📝 Testing domain registration...
+✅ Domain registered - Token ID: 1
+🔗 Testing subdomain...
+✅ Subdomain created
+
+🎉 All deployment verification tests passed!
+
+📊 Summary:
+   ✅ Contract deployment successful
+   ✅ Basic functions working
+   ✅ TLDs configured
+   ✅ Domain registration working
+   ✅ Subdomain creation working
+   ✅ Ready for production

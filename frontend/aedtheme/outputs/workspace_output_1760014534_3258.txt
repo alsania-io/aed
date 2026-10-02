@@ -1,0 +1,11 @@
+        // Add subdomain feature cost
+        if (enableSubdomains) {
+            subdomainCost = $.enhancementPricing["subdomain"].price;
+        }
+        
+        totalCost = tldCost + subdomainCost;
+        breakdown = (tldCost << 128) | subdomainCost; // Pack both values
+        
+        return (totalCost, breakdown);
+    }
+

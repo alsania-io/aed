@@ -1,0 +1,15 @@
+    function _initializeDefaultTLDs() private {
+        AEDAppStorage storage $ = _getAEDStorage();
+        
+        string[6] memory tlds = ["aed", "alsa", "07", "alsania", "fx", "echo"];
+        bool[6] memory isFree = [true, true, true, false, false, false];
+        uint256[6] memory prices = [uint256(0), uint256(0), uint256(0), uint256(1 ether), uint256(1 ether), uint256(1 ether)];
+        
+        for (uint256 i = 0; i < tlds.length; i++) {
+            string memory tld = tlds[i];
+            $.tldConfigs[tld] = TLDConfig({
+                active: true,
+                price: prices[i],
+                isFree: isFree[i],
+                maxLength: AEDConstants.MAX_DOMAIN_LENGTH,
+                minLength: AEDConstants.MIN_DOMAIN_LENGTH

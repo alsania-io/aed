@@ -1,0 +1,184 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.30;
+
+import {AEDStorage} from "../storage/AEDStorage.sol";
+import {AEDConstants} from "../core/AEDConstants.sol";
+
+/**
+ * @title LibValidation
+ * @dev Library for domain validation and normalization
+ */
+library LibValidation {
+    // Note: Direct struct access - no using statement needed
+
+    /// @dev Validates a domain name
+    function validateDomainName(
+        AEDStorage.AEDAppStorage storage $,
+        string memory name,
+        string memory tld
+    ) internal view returns (bool, string memory) {
+        // Check empty strings
+        if (bytes(name).length == 0 || bytes(tld).length == 0) {
+            return (false, "Empty name or TLD");
+        }
+
+        // Check length constraints
+        if (bytes(name).length > 63) {
+            return (false, "Name too long");
+        }
+        if (bytes(name).length < 1) {
+            return (false, "Name too short");
+        }
+
+        // Check TLD validity
+        if (!$.tldConfigs[tld].active) {
+            return (false, "Invalid TLD");
+        }
+
+        // Check if domain already exists
+        string memory fullDomain = string(abi.encodePacked(name, ".", tld));
+        if ($.domainToTokenId[fullDomain] != 0) {
+            return (false, "Domain already exists");
+        }
+
+        // Validate characters
+        if (!_isValidDomainName(name)) {
+            return (false, "Invalid characters in name");
+        }
+
+        return (true, "");
+    }
+
+    /// @dev Validates subdomain name
+    function validateSubdomainName(
+        AEDStorage.AEDAppStorage storage $,
+        string memory label,
+        uint256 parentId
+    ) internal view returns (bool, string memory) {
+        if (bytes(label).length == 0) {
+            return (false, "Empty subdomain label");
+        }
+
+        if (bytes(label).length > 63) {
+            return (false, "Subdomain label too long");
+        }
+
+        if (parentId == 0 || parentId >= $.nextTokenId) {
+            return (false, "Invalid parent domain");
+        }
+
+        AEDStorage.Domain storage parent = $.domains[parentId];
+        if (!parent.isSubdomain && (parent.features & 1) == 0) {
+            return (false, "Subdomains not enabled");
+        }
+
+        if (!_isValidDomainName(label)) {
+            return (false, "Invalid characters in subdomain");
+        }
+
+        // Check subdomain limit
+        if ($.subdomains[parentId].length >= 1000) {
+            return (false, "Maximum subdomains reached");
+        }
+
+        return (true, "");
+    }
+
+    /// @dev Validates TLD configuration
+    function validateTLD(
+        AEDStorage.AEDAppStorage storage $,
+        string memory tld,
+        AEDStorage.TLDConfig memory config
+    ) internal pure returns (bool, string memory) {
+        if (bytes(tld).length == 0) {
+            return (false, "Empty TLD");
+        }
+
+        if (bytes(tld).length > 10) {
+            return (false, "TLD too long");
+        }
+
+        if (!_isValidTLDName(tld)) {
+            return (false, "Invalid TLD characters");
+        }
+
+        if (config.maxLength < config.minLength) {
+            return (false, "Invalid length constraints");
+        }
+
+        return (true, "");
+    }
+
+    /// @dev Normalizes domain name
+    function normalizeName(string memory name) internal pure returns (string memory) {
+        bytes memory nameBytes = bytes(name);
+        bytes memory result = new bytes(nameBytes.length);
+        
+        for (uint256 i = 0; i < nameBytes.length; i++) {
+            bytes1 char = nameBytes[i];
+            
+            // Convert to lowercase
+            if (char >= 0x41 && char <= 0x5A) {
+                result[i] = bytes1(uint8(char) + 32);
+            } else {
+                result[i] = char;
+            }
+        }
+        
+        return string(result);
+    }
+
+    /// @dev Checks if domain name contains valid characters
+    function _isValidDomainName(string memory name) private pure returns (bool) {
+        bytes memory nameBytes = bytes(name);
+        
+        for (uint256 i = 0; i < nameBytes.length; i++) {
+            bytes1 char = nameBytes[i];
+            
+            // Allow alphanumeric, hyphen, underscore
+            if (
+                !(char >= 0x30 && char <= 0x39) && // 0-9
+                !(char >= 0x41 && char <= 0x5A) && // A-Z
+                !(char >= 0x61 && char <= 0x7A) && // a-z
+                char != 0x2D && // hyphen
+                char != 0x5F    // underscore
+            ) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /// @dev Checks if TLD contains valid characters
+    function _isValidTLDName(string memory tld) private pure returns (bool) {
+        bytes memory tldBytes = bytes(tld);
+        
+        for (uint256 i = 0; i < tldBytes.length; i++) {
+            bytes1 char = tldBytes[i];
+            
+            // Allow only lowercase alphanumeric
+            if (
+                !(char >= 0x30 && char <= 0x39) && // 0-9
+                !(char >= 0x61 && char <= 0x7A)    // a-z
+            ) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /// @dev Validates address
+    function validateAddress(address addr) internal pure returns (bool) {
+        return addr != address(0);
+    }
+
+    /// @dev Validates payment amount
+    function validatePayment(uint256 required, uint256 provided) internal pure returns (bool, string memory) {
+        if (provided < required) {
+            return (false, "Insufficient payment");
+        }
+        return (true, "");
+    }
+}

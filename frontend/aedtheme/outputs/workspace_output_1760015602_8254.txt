@@ -1,0 +1,7 @@
+    
+    // Check domain info
+    const [tokenId, domainInfo] = await aed.getDomainByName("mydomain.aed");
+    console.log("   Token ID:", tokenId.toString());
+    console.log("   Domain name:", domainInfo.name);
+    
+    // Check owner

@@ -1,0 +1,30 @@
+const { expect } = require("chai");
+const { ethers, upgrades } = require("hardhat");
+
+describe("AED Enhanced Domains", function () {
+    let aed;
+    let owner, user1, user2, user3, feeCollector;
+    let ADMIN_ROLE, FEE_MANAGER_ROLE, TLD_MANAGER_ROLE, UPGRADER_ROLE, PAUSER_ROLE, MINTER_ROLE;
+
+    before(async function () {
+        [owner, user1, user2, user3, feeCollector] = await ethers.getSigners();
+    });
+
+    beforeEach(async function () {
+        const AEDEnhancedImplementation = await ethers.getContractFactory("AEDEnhancedImplementation");
+        
+        aed = await upgrades.deployProxy(AEDEnhancedImplementation, [
+            "Alsania Enhanced Domains",
+            "AED",
+            feeCollector.address,
+            owner.address
+        ], {
+            initializer: "initialize",
+            kind: "uups"
+        });
+        
+        await aed.waitForDeployment();
+        
+        // Get role constants
+        ADMIN_ROLE = await aed.ADMIN_ROLE();
+        FEE_MANAGER_ROLE = await aed.FEE_MANAGER_ROLE();

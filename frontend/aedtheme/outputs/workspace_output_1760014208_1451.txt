@@ -1,0 +1,2 @@
+26:        if (bytes(name).length > AEDConstants.MAX_DOMAIN_LENGTH) {
+62:        if (bytes(label).length > AEDConstants.MAX_DOMAIN_LENGTH) {

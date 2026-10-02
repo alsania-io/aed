@@ -1,0 +1,8 @@
+    // Test domain registration with free TLD
+    console.log("\n📝 Testing domain registration...");
+    const registerTx = await aed.registerDomain("mydomain", "aed", true, "", {
+        value: 0
+    });
+    await registerTx.wait();
+    console.log("   ✅ Domain 'mydomain.aed' registered with subdomains enabled");
+    

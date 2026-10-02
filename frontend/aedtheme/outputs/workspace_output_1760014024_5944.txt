@@ -1,0 +1,11 @@
+    function upgradeFeature(
+        uint256 tokenId,
+        string calldata featureName
+    ) external payable whenNotPaused nonReentrant {
+        if (!_exists(tokenId)) revert DomainNotFound();
+        if (ownerOf(tokenId) != _msgSender()) revert UnauthorizedAccess();
+        
+        AEDAppStorage storage $ = _getAEDStorage();
+        
+        uint256 cost = $.calculateFeatureCost(featureName);
+        if (msg.value < cost) revert InsufficientPayment(cost, msg.value);

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AED Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/global-description.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Orbitron:wght@600&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+  <style>
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AED Admin Dashboard</h1>
+
+    <div class="wallet-info">
+      <div class="wallet-status">
+        <div class="status-indicator" id="connectionStatus"></div>
+        <span id="walletAddress">Wallet: Not connected</span>
+      </div>
+      <button id="connectBtn">Connect Wallet</button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" data-tab="overview">📊 Overview</div>
+      <div class="nav-tab" data-tab="global-description">📝 Global Description</div>
+      <div class="nav-tab" data-tab="roles">👥 Roles</div>
+      <div class="nav-tab" data-tab="tlds">🌐 TLDs</div>
+      <div class="nav-tab" data-tab="fees">💰 Fees</div>
+      <div class="nav-tab" data-tab="system">⚙️ System</div>
+      <div class="nav-tab" data-tab="emergency">🚨 Emergency</div>
+      <div class="nav-tab" data-tab="revenue">📈 Revenue</div>
+      <div class="nav-tab" data-tab="analytics">📊 Analytics</div>
+    </div>
+
+    <!-- Overview Tab -->
+    <div class="tab-content active" id="overview">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalDomains">0</div>
+          <div class="stat-label">Total Domains</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalRevenue">0</div>
+          <div class="stat-label">Total Revenue (MATIC)</div>
+        </div>
+        <div class="stat-card">

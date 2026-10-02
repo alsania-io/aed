@@ -1,0 +1,50 @@
+// Modular Component Loader for AED Frontend
+
+class ComponentLoader {
+    constructor() {
+        this.loadedComponents = new Set();
+        this.componentCache = new Map();
+    }
+
+    // Load HTML component into target element
+    async loadComponent(componentPath, targetSelector, options = {}) {
+        try {
+            const target = document.querySelector(targetSelector);
+            if (!target) {
+                throw new Error(`Target element not found: ${targetSelector}`);
+            }
+
+            // Check cache first
+            let html;
+            if (this.componentCache.has(componentPath)) {
+                html = this.componentCache.get(componentPath);
+            } else {
+                const response = await fetch(componentPath);
+                if (!response.ok) {
+                    throw new Error(`Failed to load component: ${response.statusText}`);
+                }
+                html = await response.text();
+                this.componentCache.set(componentPath, html);
+            }
+
+            // Process template variables if provided
+            if (options.variables) {
+                html = this.processTemplate(html, options.variables);
+            }
+
+            // Insert HTML
+            if (options.append) {
+                target.insertAdjacentHTML('beforeend', html);
+            } else {
+                target.innerHTML = html;
+            }
+
+            this.loadedComponents.add(componentPath);
+            
+            // Trigger custom event
+            window.dispatchEvent(new CustomEvent('componentLoaded', {
+                detail: { path: componentPath, target: targetSelector }
+            }));
+
+            return true;
+        } catch (error) {

@@ -1,0 +1,12 @@
+total 52
+drwxr-xr-x  9 root root  4096 Oct  9 08:23 .
+drwxr-xr-x 10 root root  4096 Oct  9 12:56 ..
+-rw-r--r--  1 root root 24035 Oct  9 12:56 AEDEnhancedImplementation.sol
+-rw-r--r--  1 root root 16698 Oct  9 12:56 AEDEnhancedImplementationFixed.sol
+drwxr-xr-x  2 root root    38 Oct  9 08:01 core
+drwxr-xr-x  2 root root    10 Oct  9 08:01 interfaces
+drwxr-xr-x  2 root root    65 Oct  9 08:03 libraries
+drwxr-xr-x  2 root root    10 Oct  9 08:01 modules
+drwxr-xr-x  2 root root    10 Oct  9 08:01 proxies
+drwxr-xr-x  2 root root    36 Oct  9 08:02 storage
+drwxr-xr-x  2 root root    10 Oct  9 08:01 utils

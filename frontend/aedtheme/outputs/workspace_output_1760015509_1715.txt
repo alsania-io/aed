@@ -1,0 +1,8 @@
+    function createSubdomain(
+        uint256 parentId,
+        string calldata label,
+        string calldata metadataURI
+    ) external payable whenNotPaused nonReentrant returns (uint256 tokenId) {
+        AEDAppStorage storage $ = _getAEDStorage();
+        
+        // Validate subdomain

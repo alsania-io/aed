@@ -1,0 +1,2 @@
+96:    function _initializeDefaultTLDs() private {
+386:    function isTLDActive(string calldata tld) external view returns (bool) {

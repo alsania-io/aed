@@ -1,0 +1,3 @@
+243:    function createSubdomain(
+331:    function getDomainByName(string calldata domain) external view returns (uint256 tokenId, Domain memory domainInfo) {
+392:    function calculateSubdomainCost(uint256 parentId) external view returns (uint256) {

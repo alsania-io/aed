@@ -1,0 +1,31 @@
+        uint256[] tokenIds;
+        mapping(string => uint256) domainToTokenId;
+    }
+
+    /// @dev Main storage structure
+    struct AEDAppStorage {
+        // Core state
+        uint256 nextTokenId;
+        uint256 totalDomains;
+        uint256 totalRevenue;
+        bool paused;
+        address feeCollector;
+        
+        // Domain mappings
+        mapping(uint256 => Domain) domains;
+        mapping(string => uint256) domainToTokenId;
+        mapping(uint256 => string) tokenIdToDomain;
+        mapping(address => uint256[]) userDomains;
+        mapping(uint256 => uint256[]) subdomains;
+        
+        // TLD management
+        mapping(string => TLDConfig) tldConfigs;
+        string[] validTLDs;
+        
+        // Pricing
+        mapping(string => FeaturePricing) featurePricing;
+        mapping(string => uint256) enhancementPricing;
+        
+        // Reverse resolution
+        mapping(address => string) reverseRecords;
+        mapping(string => address) reverseOwners;

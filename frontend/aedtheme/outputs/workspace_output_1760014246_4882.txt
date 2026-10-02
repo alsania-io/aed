@@ -1,0 +1,6 @@
+        AEDStorage.FeaturePricing memory pricing = $.featurePricing[featureName];
+        require(pricing.active, AEDConstants.ERROR_INVALID_FEATURE);
+        
+        return pricing.price;
+    }
+

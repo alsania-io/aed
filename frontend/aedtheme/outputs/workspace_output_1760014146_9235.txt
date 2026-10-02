@@ -1,0 +1,21 @@
+        // Gas optimization
+        mapping(bytes32 => uint256) cachedDomainHashes;
+        mapping(uint256 => bytes32) cachedTokenHashes;
+    }
+
+    /// @dev Returns the main storage struct
+    function _getAEDStorage() internal pure returns (AEDAppStorage storage $) {
+        assembly {
+            $.slot := AED_STORAGE_POSITION
+        }
+    }
+
+    /// @dev Returns the implementation storage struct
+    function _getImplementationStorage() internal pure returns (ImplementationStorage storage $) {
+        assembly {
+            $.slot := AED_IMPLEMENTATION_POSITION
+        }
+    }
+
+    /// @dev Implementation storage for upgrade tracking
+    struct ImplementationStorage {
